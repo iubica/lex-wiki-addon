@@ -1,4 +1,4 @@
-function parseNewYorkTimesArticle() {
+function lexWikiParseNewYorkTimesArticle() {
     var url="", hdl="", authors="", date="", descr="";
     var metas = document.getElementsByTagName("meta");
     for (i=0; i<metas.length; i++) {
@@ -19,5 +19,5 @@ function parseNewYorkTimesArticle() {
 	}
     }
 
-    self.postMessage([url, hdl, authors, date, descr]);    
+    self.postMessage(["New York Times", url, hdl, authors, date, descr]);    
 }
