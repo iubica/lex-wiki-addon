@@ -1,1 +1,1 @@
-self.on("click", parseNewYorkTimesArticle);
+self.on("click", lexWikiParseNewYorkTimesArticle);
