@@ -1,3 +1,4 @@
+var data = require("sdk/self").data;
 var contextMenu = require("sdk/context-menu");
 var clipboard = require("sdk/clipboard");
 
@@ -9,6 +10,21 @@ var menuItem1 = contextMenu.Item({
 	'});',
 	onMessage: function (selectionText) {
 	    console.log(selectionText);
+	}
+    });
+
+var menuItem2 = contextMenu.Item({
+	label: "Send2 to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.nytimes.com"),
+	contentScriptFile: data.url("menu-content-script.js"),
+	onMessage: function (a) {
+	    url = a[0];
+	    headline = a[1];
+	    authors = a[2];
+	    date = a[3];
+	    description = a[4];
+	    console.log(headline + ", by " + authors + " (" + date + ")");
+	    editWindow("New York Times", url, headline, authors, date, description);
 	}
     });
 
