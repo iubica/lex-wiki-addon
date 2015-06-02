@@ -45,5 +45,5 @@ function lexWikiParseWashingtonPostArticle() {
     
     // Author, date, descr to be retrieved in a different way
 
-    self.postMessage(["New York Times", url, hdl, authors, date, descr]);    
+    self.postMessage(["Washington Post", url, hdl, authors, date, descr]);    
 }
