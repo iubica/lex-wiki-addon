@@ -29,3 +29,19 @@ var menuItemNewYorkTimes = contextMenu.Item({
 	    lexWikiEditWindow(source, url, headline, authors, date, description);
 	}
     });
+
+var menuItemWashingtonPost = contextMenu.Item({
+	label: "WashPost: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.washingtonpost.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-washington-post.js")],
+	onMessage: function (a) {
+	    source = a[0];
+	    url = a[1];
+	    headline = a[2];
+	    authors = a[3];
+	    date = a[4];
+	    description = a[5];
+	    console.log(headline + ", by " + authors + " (" + date + ")");
+	    lexWikiEditWindow(source, url, headline, authors, date, description);
+	}
+    });
