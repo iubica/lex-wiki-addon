@@ -98,15 +98,8 @@ function lexWikiParseWallStJournalArticle() {
 	if (metas[i].getAttribute("property") == "og:description") {
 	    descr = metas[i].getAttribute("content");
 	}
-    }
-    
-    var spans = document.getElementsByTagName("span");
-    for (i=0; i < spans.length; i++) {
-	if (spans[i].getAttribute("itemprop") == "name") {
-	    authorArray.push(spans[i].innerHTML.trim());
-	}
-	if (spans[i].getAttribute("itemprop") == "datePublished") {
-	    var date_raw = spans[i].getAttribute("datetime");
+	if (metas[i].getAttribute("name") == "article.published") {
+	    var date_raw = metas[i].getAttribute("content");
 	    
 	    if (date_raw) {
 		var d = new Date(date_raw);
@@ -127,6 +120,13 @@ function lexWikiParseWallStJournalArticle() {
 		
 		date = month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
 	    }
+	}
+    }
+    
+    var spans = document.getElementsByTagName("span");
+    for (i=0; i < spans.length; i++) {
+	if (spans[i].getAttribute("itemprop") == "name") {
+	    authorArray.push(spans[i].innerHTML.trim());
 	}
     }
     
