@@ -14,34 +14,35 @@ function lexWikiEditWindow(newspaper, url, headline, authors, date, description)
     }
 }
 
+function lexWikiMenuOnMessageFunction(a) {
+    var source = a[0];
+    var url = a[1];
+    var headline = a[2];
+    var authors = a[3];
+    var date = a[4];
+    var description = a[5];
+
+    console.log(headline + ", by " + authors + " (" + date + ")");
+    lexWikiEditWindow(source, url, headline, authors, date, description);
+}
+
 var menuItemNewYorkTimes = contextMenu.Item({
 	label: "NY Times: Send to Lex-Wiki.org",
 	context: contextMenu.URLContext("*.nytimes.com"),
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-new-york-times.js")],
-	onMessage: function (a) {
-	    source = a[0];
-	    url = a[1];
-	    headline = a[2];
-	    authors = a[3];
-	    date = a[4];
-	    description = a[5];
-	    console.log(headline + ", by " + authors + " (" + date + ")");
-	    lexWikiEditWindow(source, url, headline, authors, date, description);
-	}
+	onMessage: lexWikiMenuOnMessageFunction
     });
 
 var menuItemWashingtonPost = contextMenu.Item({
 	label: "WashPost: Send to Lex-Wiki.org",
 	context: contextMenu.URLContext("*.washingtonpost.com"),
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-washington-post.js")],
-	onMessage: function (a) {
-	    source = a[0];
-	    url = a[1];
-	    headline = a[2];
-	    authors = a[3];
-	    date = a[4];
-	    description = a[5];
-	    console.log(headline + ", by " + authors + " (" + date + ")");
-	    lexWikiEditWindow(source, url, headline, authors, date, description);
-	}
+	onMessage: lexWikiMenuOnMessageFunction
+    });
+
+var menuItemWallStJournal = contextMenu.Item({
+	label: "WSJ: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.wsj.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-wall-st-journal.js")],
+	onMessage: lexWikiMenuOnMessageFunction
     });
