@@ -387,21 +387,22 @@ function lexWikiParseArsTechicaArticle() {
 	if (metas[i].getAttribute("property") == "og:url") {
 	    url = metas[i].getAttribute("content");
 	}
-	if (metas[i].getAttribute("property") == "og:title") {
-	    var str = metas[i].getAttribute("content");
-	    var i1 = str.search(" - The Boston Globe");
-	    hdl = str.substring(0, i1);
+	if (metas[i].getAttribute("name") == "parsely-page") {
+	    var str = metas[i].getAttribute("content"); // A JSON object
+
+	    JSON.parse(str, function(k, v) {
+		    if (k == "title") {
+			hdl = v;
+		    } else if (k == "pub_date") {
+			if (v) {
+			    var d = new Date(v);
+			    date = lexWikiFormatDate(d);
+			}
+		    }
+		});
 	}
-	if (metas[i].getAttribute("property") == "description") {
+	if (metas[i].getAttribute("name") == "description") {
 	    descr = metas[i].getAttribute("content");
-	}
-	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
-	    var date_raw = metas[i].getAttribute("content");
-	    
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }
 	}
     }
     
