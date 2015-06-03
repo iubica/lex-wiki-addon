@@ -183,3 +183,245 @@ function lexWikiParseBostonGlobeArticle() {
 
     self.postMessage(["Boston Globe", url, hdl, authors, date, descr]);    
 }
+
+function lexWikiParseBostonHeraldArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:url") {
+	    url = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:title") {
+	    var str = metas[i].getAttribute("content");
+	    var i1 = str.search(" - The Boston Globe");
+	    hdl = str.substring(0, i1);
+	}
+	if (metas[i].getAttribute("property") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
+	    var date_raw = metas[i].getAttribute("content");
+	    
+	    if (date_raw) {
+		var d = new Date(date_raw);
+		date = lexWikiFormatDate(d);
+	    }
+	}
+    }
+    
+    var spans = document.getElementsByTagName("span");
+    for (i=0; i < spans.length; i++) {
+	if (spans[i].getAttribute("itemprop") == "name") {
+	    authorArray.push(spans[i].innerHTML.trim());
+	}
+    }
+    
+    // Get the authors
+    for (i=0; i < authorArray.length; i++) {
+	if (i == 0) {
+	    authors += authorArray[0];
+	} else if (i == authorArray.length - 1) {
+	    authors += ", and " + authorArray[i];
+	} else {
+	    authors += ", " + authorArray[i];
+	}
+    }
+
+    self.postMessage(["Boston Herald", url, hdl, authors, date, descr]);    
+}
+
+function lexWikiParseCommonwealthMagazineArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:url") {
+	    url = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:title") {
+	    var str = metas[i].getAttribute("content");
+	    var i1 = str.search(" - The Boston Globe");
+	    hdl = str.substring(0, i1);
+	}
+	if (metas[i].getAttribute("property") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
+	    var date_raw = metas[i].getAttribute("content");
+	    
+	    if (date_raw) {
+		var d = new Date(date_raw);
+		date = lexWikiFormatDate(d);
+	    }
+	}
+    }
+    
+    var spans = document.getElementsByTagName("span");
+    for (i=0; i < spans.length; i++) {
+	if (spans[i].getAttribute("itemprop") == "name") {
+	    authorArray.push(spans[i].innerHTML.trim());
+	}
+    }
+    
+    // Get the authors
+    for (i=0; i < authorArray.length; i++) {
+	if (i == 0) {
+	    authors += authorArray[0];
+	} else if (i == authorArray.length - 1) {
+	    authors += ", and " + authorArray[i];
+	} else {
+	    authors += ", " + authorArray[i];
+	}
+    }
+
+    self.postMessage(["The Commonwealth", url, hdl, authors, date, descr]);    
+}
+
+function lexWikiParseReutersArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:url") {
+	    url = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:title") {
+	    var str = metas[i].getAttribute("content");
+	    var i1 = str.search(" - The Boston Globe");
+	    hdl = str.substring(0, i1);
+	}
+	if (metas[i].getAttribute("property") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
+	    var date_raw = metas[i].getAttribute("content");
+	    
+	    if (date_raw) {
+		var d = new Date(date_raw);
+		date = lexWikiFormatDate(d);
+	    }
+	}
+    }
+    
+    var spans = document.getElementsByTagName("span");
+    for (i=0; i < spans.length; i++) {
+	if (spans[i].getAttribute("itemprop") == "name") {
+	    authorArray.push(spans[i].innerHTML.trim());
+	}
+    }
+    
+    // Get the authors
+    for (i=0; i < authorArray.length; i++) {
+	if (i == 0) {
+	    authors += authorArray[0];
+	} else if (i == authorArray.length - 1) {
+	    authors += ", and " + authorArray[i];
+	} else {
+	    authors += ", " + authorArray[i];
+	}
+    }
+
+    self.postMessage(["The Intercept", url, hdl, authors, date, descr]);    
+}
+
+
+function lexWikiParseTheInterceptArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:url") {
+	    url = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:title") {
+	    var str = metas[i].getAttribute("content");
+	    var i1 = str.search(" - The Boston Globe");
+	    hdl = str.substring(0, i1);
+	}
+	if (metas[i].getAttribute("property") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
+	    var date_raw = metas[i].getAttribute("content");
+	    
+	    if (date_raw) {
+		var d = new Date(date_raw);
+		date = lexWikiFormatDate(d);
+	    }
+	}
+    }
+    
+    var spans = document.getElementsByTagName("span");
+    for (i=0; i < spans.length; i++) {
+	if (spans[i].getAttribute("itemprop") == "name") {
+	    authorArray.push(spans[i].innerHTML.trim());
+	}
+    }
+    
+    // Get the authors
+    for (i=0; i < authorArray.length; i++) {
+	if (i == 0) {
+	    authors += authorArray[0];
+	} else if (i == authorArray.length - 1) {
+	    authors += ", and " + authorArray[i];
+	} else {
+	    authors += ", " + authorArray[i];
+	}
+    }
+
+    self.postMessage(["Reuters", url, hdl, authors, date, descr]);    
+}
+
+
+function lexWikiParseArsTechicaArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:url") {
+	    url = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:title") {
+	    var str = metas[i].getAttribute("content");
+	    var i1 = str.search(" - The Boston Globe");
+	    hdl = str.substring(0, i1);
+	}
+	if (metas[i].getAttribute("property") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
+	    var date_raw = metas[i].getAttribute("content");
+	    
+	    if (date_raw) {
+		var d = new Date(date_raw);
+		date = lexWikiFormatDate(d);
+	    }
+	}
+    }
+    
+    var spans = document.getElementsByTagName("span");
+    for (i=0; i < spans.length; i++) {
+	if (spans[i].getAttribute("itemprop") == "name") {
+	    authorArray.push(spans[i].innerHTML.trim());
+	}
+    }
+    
+    // Get the authors
+    for (i=0; i < authorArray.length; i++) {
+	if (i == 0) {
+	    authors += authorArray[0];
+	} else if (i == authorArray.length - 1) {
+	    authors += ", and " + authorArray[i];
+	} else {
+	    authors += ", " + authorArray[i];
+	}
+    }
+
+    self.postMessage(["Ars Technica", url, hdl, authors, date, descr]);    
+}
