@@ -1,3 +1,25 @@
+function lexWikiFormatDate(d) {
+    // Argument is assumed to be a javascript Date object
+
+    var month = new Array();
+    
+    month[0] = "Jan";
+    month[1] = "Feb";
+    month[2] = "Mar";
+    month[3] = "Apr";
+    month[4] = "May";
+    month[5] = "June";
+    month[6] = "July";
+    month[7] = "Aug";
+    month[8] = "Sept";
+    month[9] = "Oct";
+    month[10] = "Nov";
+    month[11] = "Dec";
+		
+    return month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+}
+
+
 function lexWikiParseNewYorkTimesArticle() {
     var url="", hdl="", authors="", date="", descr="";
     var metas = document.getElementsByTagName("meta");
@@ -49,22 +71,7 @@ function lexWikiParseWashingtonPostArticle() {
 	    
 	    if (date_raw) {
 		var d = new Date(date_raw);
-		var month = new Array();
-
-		month[0] = "Jan";
-		month[1] = "Feb";
-		month[2] = "Mar";
-		month[3] = "Apr";
-		month[4] = "May";
-		month[5] = "June";
-		month[6] = "July";
-		month[7] = "Aug";
-		month[8] = "Sept";
-		month[9] = "Oct";
-		month[10] = "Nov";
-		month[11] = "Dec";
-		
-		date = month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+		date = lexWikiFormatDate(d);
 	    }
 	}
     }
@@ -103,22 +110,7 @@ function lexWikiParseWallStJournalArticle() {
 	    
 	    if (date_raw) {
 		var d = new Date(date_raw);
-		var month = new Array();
-
-		month[0] = "Jan";
-		month[1] = "Feb";
-		month[2] = "Mar";
-		month[3] = "Apr";
-		month[4] = "May";
-		month[5] = "June";
-		month[6] = "July";
-		month[7] = "Aug";
-		month[8] = "Sept";
-		month[9] = "Oct";
-		month[10] = "Nov";
-		month[11] = "Dec";
-		
-		date = month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+		date = lexWikiFormatDate(d);
 	    }
 	}
     }
