@@ -53,3 +53,38 @@ var menuItemBostonGlobe = contextMenu.Item({
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-boston-globe.js")],
 	onMessage: lexWikiMenuOnMessageFunction
     });
+
+var menuItemBostonHerald = contextMenu.Item({
+	label: "Boston Herald: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.bostonherald.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-boston-herald.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
+
+var menuItemCommonwealthMagazine = contextMenu.Item({
+	label: "Commonwealth Magazine: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.commonwealthmagazine.org"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-commonwealth-magazine.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
+
+var menuItemReuters = contextMenu.Item({
+	label: "Reuters: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.reuters.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-reuters.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
+
+var menuItemTheIntercept = contextMenu.Item({
+	label: "The Intercept: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.firstlook.org/theintercept"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-the-intercept.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
+
+var menuItemArsTechnica = contextMenu.Item({
+	label: "Ars Technica: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.arstechnica.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-ars-technica.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
