@@ -46,3 +46,10 @@ var menuItemWallStJournal = contextMenu.Item({
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-wall-st-journal.js")],
 	onMessage: lexWikiMenuOnMessageFunction
     });
+
+var menuItemBostonGlobe = contextMenu.Item({
+	label: "Boston Globe: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.bostonglobe.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-boston-globe.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
