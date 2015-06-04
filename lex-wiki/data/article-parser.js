@@ -232,13 +232,13 @@ function lexWikiParseCommonwealthMagazineArticle() {
 	}
 	if (metas[i].getAttribute("property") == "og:title") {
 	    var str = metas[i].getAttribute("content");
-	    var i1 = str.search(" - The Boston Globe");
+	    var i1 = str.search(" - CommonWealth Magazine");
 	    hdl = str.substring(0, i1);
 	}
-	if (metas[i].getAttribute("property") == "description") {
+	if (metas[i].getAttribute("property") == "og:description") {
 	    descr = metas[i].getAttribute("content");
 	}
-	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
+	if (metas[i].getAttribute("name") == "og:updated_time") {
 	    var date_raw = metas[i].getAttribute("content");
 	    
 	    if (date_raw) {
