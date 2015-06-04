@@ -298,7 +298,7 @@ function lexWikiParseTheInterceptArticle() {
 	if (metas[i].getAttribute("property") == "description") {
 	    descr = metas[i].getAttribute("content");
 	}
-	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
+	if (metas[i].getAttribute("property") == "article:published_time") {
 	    var date_raw = metas[i].getAttribute("content");
 	    
 	    if (date_raw) {
