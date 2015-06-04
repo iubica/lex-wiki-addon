@@ -77,7 +77,7 @@ var menuItemReuters = contextMenu.Item({
 
 var menuItemTheIntercept = contextMenu.Item({
 	label: "The Intercept: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.firstlook.org/theintercept"),
+	context: contextMenu.URLContext("*.firstlook.org"),
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-the-intercept.js")],
 	onMessage: lexWikiMenuOnMessageFunction
     });
