@@ -94,15 +94,7 @@ function lexWikiParseWashingtonPostArticle() {
     }
     
     // Get the authors
-    for (i=0; i < authorArray.length; i++) {
-	if (i == 0) {
-	    authors += authorArray[0];
-	} else if (i == authorArray.length - 1) {
-	    authors += ", and " + authorArray[i];
-	} else {
-	    authors += ", " + authorArray[i];
-	}
-    }
+    authors = lexWikiFormatAuthors(authorArray);
 
     self.postMessage(["Washington Post", url, hdl, authors, date, descr]);    
 }
@@ -140,15 +132,7 @@ function lexWikiParseWallStJournalArticle() {
     }
     
     // Get the authors
-    for (i=0; i < authorArray.length; i++) {
-	if (i == 0) {
-	    authors += authorArray[0];
-	} else if (i == authorArray.length - 1) {
-	    authors += ", and " + authorArray[i];
-	} else {
-	    authors += ", " + authorArray[i];
-	}
-    }
+    authors = lexWikiFormatAuthors(authorArray);
 
     self.postMessage(["Wall St Journal", url, hdl, authors, date, descr]);    
 }
@@ -188,15 +172,7 @@ function lexWikiParseBostonGlobeArticle() {
     }
     
     // Get the authors
-    for (i=0; i < authorArray.length; i++) {
-	if (i == 0) {
-	    authors += authorArray[0];
-	} else if (i == authorArray.length - 1) {
-	    authors += ", and " + authorArray[i];
-	} else {
-	    authors += ", " + authorArray[i];
-	}
-    }
+    authors = lexWikiFormatAuthors(authorArray);
 
     self.postMessage(["Boston Globe", url, hdl, authors, date, descr]);    
 }
@@ -225,15 +201,7 @@ function lexWikiParseBostonHeraldArticle() {
     }
     
     // Get the authors
-    for (i=0; i < authorArray.length; i++) {
-	if (i == 0) {
-	    authors += authorArray[0];
-	} else if (i == authorArray.length - 1) {
-	    authors += ", and " + authorArray[i];
-	} else {
-	    authors += ", " + authorArray[i];
-	}
-    }
+    authors = lexWikiFormatAuthors(authorArray);
 
     self.postMessage(["Boston Herald", url, hdl, authors, date, descr]);    
 }
@@ -276,22 +244,13 @@ function lexWikiParseCommonwealthMagazineArticle() {
     }
 
     // Get the authors
-    for (i=0; i < authorArray.length; i++) {
-	if (i == 0) {
-	    authors += authorArray[0];
-	} else if (i == authorArray.length - 1) {
-	    authors += ", and " + authorArray[i];
-	} else {
-	    authors += ", " + authorArray[i];
-	}
-    }
+    authors = lexWikiFormatAuthors(authorArray);
 
     self.postMessage(["The Commonwealth", url, hdl, authors, date, descr]);    
 }
 
 function lexWikiParseReutersArticle() {
     var url="", hdl="", authors="", date="", descr="";
-    var authorArray = [];
 
     var metas = document.getElementsByTagName("meta");
     for (i=0; i < metas.length; i++) {
@@ -397,15 +356,7 @@ function lexWikiParseArsTechicaArticle() {
     }
     
     // Get the authors
-    for (i=0; i < authorArray.length; i++) {
-	if (i == 0) {
-	    authors += authorArray[0];
-	} else if (i == authorArray.length - 1) {
-	    authors += ", and " + authorArray[i];
-	} else {
-	    authors += ", " + authorArray[i];
-	}
-    }
+    authors = lexWikiFormatAuthors(authorArray);
 
     self.postMessage(["Ars Technica", url, hdl, authors, date, descr]);    
 }
