@@ -314,7 +314,7 @@ function lexWikiParseReutersArticle() {
 	}
     }
 
-    self.postMessage(["The Intercept", url, hdl, authors, date, descr]);    
+    self.postMessage(["Reuters", url, hdl, authors, date, descr]);    
 }
 
 
@@ -363,7 +363,7 @@ function lexWikiParseTheInterceptArticle() {
 	}
     }
 
-    self.postMessage(["Reuters", url, hdl, authors, date, descr]);    
+    self.postMessage(["The Intercept", url, hdl, authors, date, descr]);    
 }
 
 
