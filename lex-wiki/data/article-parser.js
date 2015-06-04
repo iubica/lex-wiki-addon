@@ -19,6 +19,23 @@ function lexWikiFormatDate(d) {
     return month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
 }
 
+function lexWikiFormatAuthors(authorArray) {
+    var authors = "";
+
+    for (i=0; i < authorArray.length; i++) {
+	if (i == 0) {
+	    authors += authorArray[0];
+	} else if (i == 1 && authorArray.length == 2) {
+	    authors += " and " + authorArray[i];
+	} else if (i == authorArray.length - 1) {
+	    authors += ", and " + authorArray[i];
+	} else {
+	    authors += ", " + authorArray[i];
+	}
+    }
+
+    return authors;
+}
 
 function lexWikiParseNewYorkTimesArticle() {
     var url="", hdl="", authors="", date="", descr="";
@@ -316,7 +333,7 @@ function lexWikiParseTheInterceptArticle() {
 	}
 	if (metas[i].getAttribute("property") == "og:title") {
 	    var str = metas[i].getAttribute("content");
-	    var i1 = str.search(" - The Boston Globe");
+	    var i1 = str.search(" - The Intercept");
 	    hdl = str.substring(0, i1);
 	}
 	if (metas[i].getAttribute("property") == "description") {
@@ -332,23 +349,13 @@ function lexWikiParseTheInterceptArticle() {
 	}
     }
     
-    var spans = document.getElementsByTagName("span");
-    for (i=0; i < spans.length; i++) {
-	if (spans[i].getAttribute("itemprop") == "name") {
-	    authorArray.push(spans[i].innerHTML.trim());
-	}
+    var urls = document.querySelectorAll("div.ti-byline > cite > span > a");
+    for (i=0; i < urls.length; i++) {
+	authorArray.push(urls[i].innerHTML.trim());
     }
-    
+
     // Get the authors
-    for (i=0; i < authorArray.length; i++) {
-	if (i == 0) {
-	    authors += authorArray[0];
-	} else if (i == authorArray.length - 1) {
-	    authors += ", and " + authorArray[i];
-	} else {
-	    authors += ", " + authorArray[i];
-	}
-    }
+    authors = lexWikiFormatAuthors(authorArray);
 
     self.postMessage(["The Intercept", url, hdl, authors, date, descr]);    
 }
