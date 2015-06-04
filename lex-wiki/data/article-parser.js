@@ -238,7 +238,7 @@ function lexWikiParseCommonwealthMagazineArticle() {
 	if (metas[i].getAttribute("property") == "og:description") {
 	    descr = metas[i].getAttribute("content");
 	}
-	if (metas[i].getAttribute("name") == "og:updated_time") {
+	if (metas[i].getAttribute("property") == "article:published_time") {
 	    var date_raw = metas[i].getAttribute("content");
 	    
 	    if (date_raw) {
@@ -248,13 +248,16 @@ function lexWikiParseCommonwealthMagazineArticle() {
 	}
     }
     
-    var spans = document.getElementsByTagName("span");
+    var spans = document.querySelectorAll("p.post-meta > span.authors");
     for (i=0; i < spans.length; i++) {
-	if (spans[i].getAttribute("itemprop") == "name") {
-	    authorArray.push(spans[i].innerHTML.trim());
+	var urls = spans[i].getElementsByTagName("a");
+	for (j = 0; j < urls.length; j++) {
+	    if (urls[j].getAttribute("rel") == "author") {
+		authorArray.push(urls[j].innerHTML.trim());
+	    }
 	}
     }
-    
+
     // Get the authors
     for (i=0; i < authorArray.length; i++) {
 	if (i == 0) {
