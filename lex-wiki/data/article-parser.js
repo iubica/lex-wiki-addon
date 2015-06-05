@@ -84,7 +84,7 @@ function lexWikiParseWashingtonPostArticle() {
 	    authorArray.push(spans[i].innerHTML.trim());
 	}
 	if (spans[i].getAttribute("itemprop") == "datePublished") {
-	    var date_raw = spans[i].getAttribute("datetime");
+	    var date_raw = spans[i].getAttribute("content");
 	    
 	    if (date_raw) {
 		var d = new Date(date_raw);
@@ -332,7 +332,8 @@ function lexWikiParseArsTechicaArticle() {
 	    JSON.parse(str, function(k, v) {
 		    if (k == "title") {
 			hdl = v;
-		    } else if (k == "pub_date") {
+		    } else if (k == "pub_date"
+) {
 			if (v) {
 			    var d = new Date(v);
 			    date = lexWikiFormatDate(d);
