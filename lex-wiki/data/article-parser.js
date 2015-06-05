@@ -402,9 +402,6 @@ function lexWikiParseLexingtonMinutemanArticle() {
 	    
 	    authors = a.replace(/\b(\w)+\@(\w)+\.(\w)+\b/g, "").trim();
 	}
-	if (metas[i].getAttribute("name") == "date") {
-	    date = metas[i].getAttribute("content");
-	}
     }
 
     var links = document.getElementsByTagName("link");
@@ -413,7 +410,14 @@ function lexWikiParseLexingtonMinutemanArticle() {
 	    url = links[i].getAttribute("href");
 	}
     }
-    
+
+    // Read the date as the 5th component of the URL spliced by '/', typically
+    // http://lexington.wickedlocal.com/article/20150604/NEWS/150607953
+    var d1 = url.split("/");
+    var d2 = d1[4];
+    var d3 = new Date(d2.substring(0, 4), d2.substring(5, 6), d2.substring(7, 8));
+    date = lexWikiFormatDate(d3);
+
     self.postMessage(["Lexington Minuteman", url, hdl, authors, date, descr]);    
 }
 
