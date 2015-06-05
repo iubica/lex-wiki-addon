@@ -88,3 +88,10 @@ var menuItemArsTechnica = contextMenu.Item({
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-ars-technica.js")],
 	onMessage: lexWikiMenuOnMessageFunction
     });
+
+var menuItemPolitico = contextMenu.Item({
+	label: "Politico: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.politico.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-politico.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
