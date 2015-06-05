@@ -332,8 +332,7 @@ function lexWikiParseArsTechicaArticle() {
 	    JSON.parse(str, function(k, v) {
 		    if (k == "title") {
 			hdl = v;
-		    } else if (k == "pub_date"
-) {
+		    } else if (k == "pub_date") {
 			if (v) {
 			    var d = new Date(v);
 			    date = lexWikiFormatDate(d);
@@ -361,3 +360,30 @@ function lexWikiParseArsTechicaArticle() {
 
     self.postMessage(["Ars Technica", url, hdl, authors, date, descr]);    
 }
+
+
+function lexWikiParsePoliticoArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:title") {
+	    hdl = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:url") {
+	    url = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "author") {
+	    authors = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "date") {
+	    date = metas[i].getAttribute("content");
+	}
+    }
+    
+    self.postMessage(["Politico", url, hdl, authors, date, descr]);    
+}
+
