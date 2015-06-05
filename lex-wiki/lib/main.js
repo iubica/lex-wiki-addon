@@ -95,3 +95,10 @@ var menuItemPolitico = contextMenu.Item({
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-politico.js")],
 	onMessage: lexWikiMenuOnMessageFunction
     });
+
+var menuItemLexingtonMinuteman = contextMenu.Item({
+	label: "Lexington Minuteman: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.lexington.wickedlocal.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-lexington-minuteman.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
