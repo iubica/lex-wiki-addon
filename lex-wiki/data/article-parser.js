@@ -361,7 +361,6 @@ function lexWikiParseArsTechicaArticle() {
     self.postMessage(["Ars Technica", url, hdl, authors, date, descr]);    
 }
 
-
 function lexWikiParsePoliticoArticle() {
     var url="", hdl="", authors="", date="", descr="";
 
@@ -385,5 +384,36 @@ function lexWikiParsePoliticoArticle() {
     }
     
     self.postMessage(["Politico", url, hdl, authors, date, descr]);    
+}
+
+function lexWikiParseLexingtonMinutemanArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:title") {
+	    hdl = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "og:description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "author") {
+	    var a = metas[i].getAttribute("content");
+	    
+	    authors = a.replace(/\b(\w)+\@(\w)+\.(\w)+\b/g, "").trim();
+	}
+	if (metas[i].getAttribute("name") == "date") {
+	    date = metas[i].getAttribute("content");
+	}
+    }
+
+    var links = document.getElementsByTagName("link");
+    for (i=0; i < links.length; i++) {
+	if (links[i].getAttribute("rel") == "canonical") {
+	    url = links[i].getAttribute("href");
+	}
+    }
+    
+    self.postMessage(["Lexington Minuteman", url, hdl, authors, date, descr]);    
 }
 
