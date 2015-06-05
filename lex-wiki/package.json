@@ -5,5 +5,12 @@
   "description": "Lex-Wiki.org add-on",
   "author": "",
   "license": "MPL 2.0",
-  "version": "1.0"
+  "version": "1.0",	
+  "preferences": [{
+        "name": "mediaWikiSite",
+        "title": "MediaWiki Site",
+        "description": "URL of your MediaWiki",
+        "type": "string",
+        "value": "http://lex-wiki.org"
+    }]
 }
