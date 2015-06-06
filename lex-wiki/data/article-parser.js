@@ -422,3 +422,42 @@ function lexWikiParseLexingtonMinutemanArticle() {
     self.postMessage(["Lexington Minuteman", url, hdl, authors, date, descr]);    
 }
 
+function lexWikiParseCNNArticle() {
+    var url="", hdl="", authors="", date="", descr="";
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "author") {
+	    var a = metas[i].getAttribute("content");
+	    
+	    authors = a.slice(0, a.lastIndexOf(",")).trim();
+	}
+	if (metas[i].getAttribute("property") == "og:pubdate" ||
+	    metas[i].getAttribute("name") == "pubdate" ||
+	    metas[i].getAttribute("name") == "lastmod" ) {
+	    var date_raw = metas[i].getAttribute("content");
+	    if (date_raw) {
+		var d = new Date(date_raw);
+		date = lexWikiFormatDate(d);
+	    }	    
+	}
+    }
+
+    var links = document.getElementsByTagName("link");
+    for (i=0; i < links.length; i++) {
+	if (links[i].getAttribute("rel") == "canonical") {
+	    url = links[i].getAttribute("href");
+	}
+    }
+
+    var h = document.querySelectorAll("h1.pg-headline");
+    if (h.length > 0) {
+	hdl = h[0].innerHTML.trim();
+    }
+
+    self.postMessage(["CNN", url, hdl, authors, date, descr]);    
+}
+
