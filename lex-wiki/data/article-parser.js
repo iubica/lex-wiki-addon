@@ -41,7 +41,8 @@ function lexWikiParseNewYorkTimesArticle() {
     var url="", hdl="", authors="", date="", descr="";
     var metas = document.getElementsByTagName("meta");
     for (i=0; i < metas.length; i++) {
-	if (metas[i].getAttribute("property") == "twitter:url") {
+	if (metas[i].getAttribute("property") == "twitter:url" ||
+	    metas[i].getAttribute("name") == "twitter:url") {
 	    url = metas[i].getAttribute("content");
 	}
 	if (metas[i].getAttribute("name") == "hdl") {
