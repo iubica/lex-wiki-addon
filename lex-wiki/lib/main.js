@@ -102,3 +102,10 @@ var menuItemLexingtonMinuteman = contextMenu.Item({
 	contentScriptFile: [data.url("article-parser.js"), data.url("menu-lexington-minuteman.js")],
 	onMessage: lexWikiMenuOnMessageFunction
     });
+
+var menuItemCNN = contextMenu.Item({
+	label: "CNN: Send to Lex-Wiki.org",
+	context: contextMenu.URLContext("*.cnn.com"),
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-cnn.js")],
+	onMessage: lexWikiMenuOnMessageFunction
+    });
