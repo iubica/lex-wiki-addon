@@ -115,6 +115,9 @@ function lexWikiParseWallStJournalArticle() {
 	if (metas[i].getAttribute("property") == "og:description") {
 	    descr = metas[i].getAttribute("content");
 	}
+	if (metas[i].getAttribute("name") == "author") {
+	    authors = metas[i].getAttribute("content");
+	}
 	if (metas[i].getAttribute("name") == "article.published") {
 	    var date_raw = metas[i].getAttribute("content");
 	    
@@ -125,15 +128,17 @@ function lexWikiParseWallStJournalArticle() {
 	}
     }
     
-    var spans = document.getElementsByTagName("span");
-    for (i=0; i < spans.length; i++) {
-	if (spans[i].getAttribute("itemprop") == "name") {
-	    authorArray.push(spans[i].innerHTML.trim());
+    if (authors != "") {
+	var spans = document.getElementsByTagName("span");
+	for (i=0; i < spans.length; i++) {
+	    if (spans[i].getAttribute("itemprop") == "name") {
+		authorArray.push(spans[i].innerHTML.trim());
+	    }
 	}
-    }
     
-    // Get the authors
-    authors = lexWikiFormatAuthors(authorArray);
+	// Get the authors
+	authors = lexWikiFormatAuthors(authorArray);
+    }
 
     self.postMessage(["Wall St Journal", url, hdl, authors, date, descr]);    
 }
