@@ -128,7 +128,7 @@ function lexWikiParseWallStJournalArticle() {
 	}
     }
     
-    if (authors != "") {
+    if (authors == "") {
 	var spans = document.getElementsByTagName("span");
 	for (i=0; i < spans.length; i++) {
 	    if (spans[i].getAttribute("itemprop") == "name") {
@@ -138,6 +138,26 @@ function lexWikiParseWallStJournalArticle() {
     
 	// Get the authors
 	authors = lexWikiFormatAuthors(authorArray);
+    }
+
+    if (date == "") {
+	// Blog posts use date in the format below
+	var h = document.querySelectorAll("small.post-time");
+	if (h.length > 0) {
+	    console.log("h.length is " + h.length);
+	    var date_raw = h[0].innerHTML;
+
+	    console.log("h[0].innerHTML is " + h[0].innerHTML);
+	    
+	    // Format of date_raw is " 4:40 pm  ET<br/>Jun 9, 2015  "
+	    // But in fact for some reason the break element is converted
+	    // to <br> when parsed as innerHTML string, so we will
+	    // skip forward past <br>
+	    var i = date_raw.search("<br>");
+	    if (i > 0) {
+		date = date_raw.substring(i+4).trim();
+	    }
+	}
     }
 
     self.postMessage(["Wall St Journal", url, hdl, authors, date, descr]);    
