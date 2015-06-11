@@ -2,7 +2,54 @@ var data = require("sdk/self").data;
 var contextMenu = require("sdk/context-menu");
 var clipboard = require("sdk/clipboard");
 
-function lexWikiEditWindow(newspaper, url, headline, authors, date, description) {
+function lexWikiLogin3(response) {
+    console.log("Login response 2 (json): " + response.text);
+    console.log("Login response 2 result: " + response.json["login"]["result"]);
+}
+
+function lexWikiLogin2(response) {
+    var httpRequest = require("sdk/request").Request;
+    var p = require('sdk/simple-prefs');
+    var user = p.prefs['mediaWikiUser'];
+    var pw = p.prefs['mediaWikiPassword'];
+    var token = response.json["login"]["token"];
+    var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
+
+    console.log("Login response 1 (json): " + response.text);
+    console.log("Login response 2 result: " + response.json["login"]["result"]);
+    console.log("Login response 1 token: " + response.json["login"]["token"]);
+
+    var h = httpRequest({
+	    url: loginUrl,
+	    onComplete: lexWikiLogin3
+	});
+
+    h.post();
+}
+
+function lexWikiLogin() {
+    // Log into MediaWiki
+    var httpRequest = require("sdk/request").Request;
+    var p = require('sdk/simple-prefs');
+    var user = p.prefs['mediaWikiUser'];
+    var pw = p.prefs['mediaWikiPassword'];
+    var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&format=json";
+
+    var h = httpRequest({
+	    url: loginUrl,
+	    onComplete: lexWikiLogin2
+	});
+
+    h.post();
+
+}
+
+function lexWikiPost(msg) {
+    lexWikiLogin();
+}
+
+function lexWikiEditWindow(newspaper, url, headline, 
+			   authors, date, description) {
     var utils = require('sdk/window/utils');
     var browserWindow = utils.getMostRecentBrowserWindow();
     var window = browserWindow.content; // `window` object for the current webpage
@@ -11,6 +58,7 @@ function lexWikiEditWindow(newspaper, url, headline, authors, date, description)
     if (r == true) {
 	// OK was pressed
 	clipboard.set(msg);
+	lexWikiPost(msg);
     }
 }
 
