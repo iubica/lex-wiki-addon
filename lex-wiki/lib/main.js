@@ -1,23 +1,37 @@
 var data = require("sdk/self").data;
 var contextMenu = require("sdk/context-menu");
 var clipboard = require("sdk/clipboard");
+var httpRequest = require("sdk/request").Request;
+
+function lexWikiPageInfo(response) {
+    console.log("Page info response (json): " + response.text);    
+    //    console.log("Page info response edit token: " + response.json.query.pages[0].edittoken);    
+}
 
 function lexWikiLogin3(response) {
+    var queryUrl = "http://lex-wiki.org/w/api.php?action=query&prop=info&intoken=edit&titles=Test&format=json";
+
     console.log("Login response 2 (json): " + response.text);
-    console.log("Login response 2 result: " + response.json["login"]["result"]);
+    console.log("Login response 2 result: " + response.json.login.result);
+
+    var h = httpRequest({
+	    url: queryUrl,
+	    onComplete: lexWikiPageInfo
+	});
+
+    h.post();
 }
 
 function lexWikiLogin2(response) {
-    var httpRequest = require("sdk/request").Request;
     var p = require('sdk/simple-prefs');
     var user = p.prefs['mediaWikiUser'];
     var pw = p.prefs['mediaWikiPassword'];
-    var token = response.json["login"]["token"];
+    var token = response.json.login.token;
     var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
 
     console.log("Login response 1 (json): " + response.text);
-    console.log("Login response 2 result: " + response.json["login"]["result"]);
-    console.log("Login response 1 token: " + response.json["login"]["token"]);
+    console.log("Login response 2 result: " + response.json.login.result);
+    console.log("Login response 1 token: " + response.json.login.token);
 
     var h = httpRequest({
 	    url: loginUrl,
@@ -29,7 +43,6 @@ function lexWikiLogin2(response) {
 
 function lexWikiLogin() {
     // Log into MediaWiki
-    var httpRequest = require("sdk/request").Request;
     var p = require('sdk/simple-prefs');
     var user = p.prefs['mediaWikiUser'];
     var pw = p.prefs['mediaWikiPassword'];
