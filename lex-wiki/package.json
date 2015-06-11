@@ -27,7 +27,6 @@
         "description": "Password for Mediawiki",
         "type": "string",
         "value": "caftarate"
-	}	
-	   
+	}		   
     ]
 }
