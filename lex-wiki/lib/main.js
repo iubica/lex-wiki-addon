@@ -3,13 +3,39 @@ var contextMenu = require("sdk/context-menu");
 var clipboard = require("sdk/clipboard");
 var httpRequest = require("sdk/request").Request;
 
+function lexWikiPageEditDone(response) {
+    console.log("Page edit done response: " + response.text.substr(0,1000));    
+    console.log("Page edit done response finished");    
+}
+
 function lexWikiPageInfo(response) {
+    var page_id, edit_token, last_edit_tstamp;
+    
     console.log("Page info response (json): " + response.text);    
-    //    console.log("Page info response edit token: " + response.json.query.pages[0].edittoken);    
+    
+    for (var p in response.json.query.pages) {
+	console.log("Page id: " + p);
+	console.log("Page response edit token: " + response.json.query.pages[p].edittoken);
+	console.log("Page last edit timestamp: " + response.json.query.pages[p].revisions[0].timestamp);
+
+	page_id = p;
+	edit_token = response.json.query.pages[p].edittoken;
+	last_edit_tstamp = response.json.query.pages[p].revisions[0].timestamp;
+    }
+
+    var queryUrl = "http://lex-wiki.org/w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=Some%20text<br/>%0A";
+
+    var h = httpRequest({
+	    url: queryUrl,
+	    onComplete: lexWikiPageEditDone
+	});
+
+    h.post();
+    console.log("Post to " + queryUrl);
 }
 
 function lexWikiLogin3(response) {
-    var queryUrl = "http://lex-wiki.org/w/api.php?action=query&prop=info&intoken=edit&titles=Test&format=json";
+    var queryUrl = "http://lex-wiki.org/w/api.php?action=query&prop=info|revisions&intoken=edit&rvprop=timestamp&titles=Test&format=json";
 
     console.log("Login response 2 (json): " + response.text);
     console.log("Login response 2 result: " + response.json.login.result);
