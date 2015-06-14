@@ -154,7 +154,10 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	    console.log("Page title: " + response.json.query.categorymembers[i].title);
 	    
 	    // Create the menu item for this Mediawiki page
-	    var menuItem = contextMenu.Item({ label: response.json.query.categorymembers[i].title, data: response.json.query.categorymembers[i].title });
+	    var menuItem = contextMenu.Item({ 
+		    label: response.json.query.categorymembers[i].title, 
+		    data: response.json.query.categorymembers[i].title 
+		});
 
 	    // Save in the global lexWikiMenuItems array, so we can remove
 	    // this menu item later when we log out 
