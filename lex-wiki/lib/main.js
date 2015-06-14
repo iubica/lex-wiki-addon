@@ -40,28 +40,29 @@ function lexWikiMenuItemLogoutPredicate(context) {
     }
 }
 
-function lexWikiPost(msg) {
+function lexWikiPost(msg, lexWikiNewsPage) {
     function lexWikiPageEditDone(response) {
 	console.log("Page edit done response: " + response.text.substr(0,1000));    
 	console.log("Page edit done response finished");    
     }
     
     function lexWikiPageInfo(response) {
+	var p = require('sdk/simple-prefs');  
 	var page_id, edit_token, last_edit_tstamp;
 	
 	console.log("Page info response (json): " + response.text);    
 	
-	for (var p in response.json.query.pages) {
-	    console.log("Page id: " + p);
-	    console.log("Page response edit token: " + response.json.query.pages[p].edittoken);
-	    console.log("Page last edit timestamp: " + response.json.query.pages[p].revisions[0].timestamp);
+	for (var page in response.json.query.pages) {
+	    console.log("Page id: " + page);
+	    console.log("Page response edit token: " + response.json.query.pages[page].edittoken);
+	    console.log("Page last edit timestamp: " + response.json.query.pages[page].revisions[0].timestamp);
 	    
-	    page_id = p;
-	    edit_token = response.json.query.pages[p].edittoken;
-	    last_edit_tstamp = response.json.query.pages[p].revisions[0].timestamp;
+	    page_id = page;
+	    edit_token = response.json.query.pages[page].edittoken;
+	    last_edit_tstamp = response.json.query.pages[page].revisions[0].timestamp;
 	}
 	
-	var queryUrl = "http://lex-wiki.org/w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=" + encodeURIComponent(msg) + "%0A";
+	var queryUrl = p.prefs['mediaWikiSite'] + "w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=" + encodeURIComponent(msg) + "%0A";
 	
 	var h = httpRequest({
 		url: queryUrl,
@@ -72,11 +73,9 @@ function lexWikiPost(msg) {
 	console.log("Post to " + queryUrl);
     }
     
-    function lexWikiLogin3(response) {
-	var queryUrl = "http://lex-wiki.org/w/api.php?action=query&prop=info|revisions&intoken=edit&rvprop=timestamp&titles=Test&format=json";
-	
-	console.log("Login response 2 (json): " + response.text);
-	console.log("Login response 2 result: " + response.json.login.result);
+    function lexWikiRequestPageInfo() {
+	var p = require('sdk/simple-prefs');    
+	var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=query&prop=info|revisions&intoken=edit&rvprop=timestamp&titles=" + /* lexWikiNewsPage */ "Test" + "&format=json";
 	
 	var h = httpRequest({
 		url: queryUrl,
@@ -86,41 +85,7 @@ function lexWikiPost(msg) {
 	h.post();
     }
     
-    function lexWikiLogin2(response) {
-	var p = require('sdk/simple-prefs');
-	var user = p.prefs['mediaWikiUser'];
-	var pw = p.prefs['mediaWikiPassword'];
-	var token = response.json.login.token;
-	var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
-	
-	console.log("Login response 1 (json): " + response.text);
-	console.log("Login response 2 result: " + response.json.login.result);
-	console.log("Login response 1 token: " + response.json.login.token);
-	
-	var h = httpRequest({
-		url: loginUrl,
-		onComplete: lexWikiLogin3
-	    });
-	
-	h.post();
-    }
-    
-    function lexWikiLogin() {
-	// Log into MediaWiki
-	var p = require('sdk/simple-prefs');
-	var user = p.prefs['mediaWikiUser'];
-	var pw = p.prefs['mediaWikiPassword'];
-	var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&format=json";
-	
-	var h = httpRequest({
-		url: loginUrl,
-		onComplete: lexWikiLogin2
-	    });
-	
-	h.post();    
-    }
-    
-    lexWikiLogin();
+    lexWikiRequestPageInfo();
 }
 
 function lexWikiEditWindow(newspaper, url, headline, 
@@ -141,6 +106,7 @@ function lexWikiEditWindow(newspaper, url, headline,
 	var r = window.confirm(msg + "\n\nSend to " + lexWikiNewsPage + "?\n");
 	if (r == true) {
 	    // OK was pressed
+	    lexWikiPost(msg, lexWikiNewsPage);
 	}
     }
 }
