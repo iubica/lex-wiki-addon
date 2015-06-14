@@ -5,6 +5,7 @@ var httpRequest = require("sdk/request").Request;
 
 // Global lex-wiki.org credential variables
 var lexWikiLoginSuccess = false;
+var lexWikiMenuItems = [];
 
 // Invoked by menuItemLexWikiLogin
 function lexWikiMenuItemLoginPredicate(context) {
@@ -121,6 +122,17 @@ function lexWikiEditWindow(newspaper, url, headline,
     }
 }
 
+// Lex-wiki.org main parent menu, populated in 
+// lexWikiMenuLoginOnMessageFunction(), therefore has to be declared
+// ahead of the definition of that function
+var menuItemLexWikiParent = contextMenu.Menu({
+	label: "Add to Lex-Wiki.org",
+	contentScript: 'self.on("click", function (node, data) {' +
+	'  console.log("You clicked " + data);' +
+	'});',
+	items: []
+    });
+
 //
 // MenuOnMessage APIs
 //
@@ -140,6 +152,16 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	for (var i = 0; i < response.json.query.categorymembers.length; i++) {
 	    console.log("Page id: " + response.json.query.categorymembers[i].pageid);
 	    console.log("Page title: " + response.json.query.categorymembers[i].title);
+	    
+	    // Create the menu item for this Mediawiki page
+	    var menuItem = contextMenu.Item({ label: response.json.query.categorymembers[i].title, data: response.json.query.categorymembers[i].title });
+
+	    // Save in the global lexWikiMenuItems array, so we can remove
+	    // this menu item later when we log out 
+	    lexWikiMenuItems.push(menuItem);
+
+	    // Add the menu item to the parent menu
+	    menuItemLexWikiParent.addItem(menuItem);
 	}
     }
 
@@ -207,6 +229,14 @@ function lexWikiMenuLogoutOnMessageFunction(a) {
 
     function lexWikiLogout2(response) {
 	console.log("Logout response (json): " + response.text);
+
+	// Remove all menu items from the parent menu
+	for (var i = 0; i < lexWikiMenuItems.length; i++) {
+	    menuItemLexWikiParent.removeItem(lexWikiMenuItems[i]);
+	    delete lexWikiMenuItems[i];
+	}
+	
+	lexWikiMenuItems = [];
 
 	// We're logged out
 	lexWikiLoginSuccess = false;
