@@ -126,7 +126,7 @@ function lexWikiEditWindow(newspaper, url, headline,
 // lexWikiMenuLoginOnMessageFunction(), therefore has to be declared
 // ahead of the definition of that function
 var menuItemLexWikiParent = contextMenu.Menu({
-	label: "Add to Lex-Wiki.org",
+	label: "Send to Lex-Wiki.org",
 	contentScript: 'self.on("click", function (node, data) {' +
 	'  console.log("You clicked " + data);' +
 	'});',
