@@ -306,7 +306,6 @@ function lexWikiParseReutersArticle() {
     self.postMessage(["Reuters", url, hdl, authors, date, descr]);    
 }
 
-
 function lexWikiParseTheInterceptArticle() {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
@@ -344,7 +343,6 @@ function lexWikiParseTheInterceptArticle() {
 
     self.postMessage(["The Intercept", url, hdl, authors, date, descr]);    
 }
-
 
 function lexWikiParseArsTechicaArticle() {
     var url="", hdl="", authors="", date="", descr="";
@@ -487,6 +485,37 @@ function lexWikiParseCNNArticle() {
 }
 
 function lexWikiParseGenericArticle(node, data) {
-    console.log("You clicked " + data);
+    var lexWikiNewsPage = data;
+    var urlHost = window.location.host;
+
+    console.log("You clicked " + lexWikiNewsPage);
+    console.log("At " + window.location.href);
+    console.log("Host " + window.location.host);
+    
+    if (urlHost.match(/nytimes\.com$/)) {
+	lexWikiParseNewYorkTimesArticle();
+    } else if (urlHost.match(/washingtonpost\.com$/)) {
+	lexWikiParseWashingtonPostArticle();
+    } else if (urlHost.match(/wsj\.com$/)) {
+	lexWikiParseWallStJournalArticle();
+    } else if (urlHost.match(/bostonglobe\.com$/)) {
+	lexWikiParseBostonGlobeArticle();
+    } else if (urlHost.match(/bostonherald\.com$/)) {
+	lexWikiParseBostonHeraldArticle();
+    } else if (urlHost.match(/commonwealthmagazine\.org$/)) {
+	lexWikiParseCommonwealthMagazineArticle();
+    } else if (urlHost.match(/reuters\.com$/)) {
+	lexWikiParseReutersArticle();
+    } else if (urlHost.match(/firstlook\.org$/)) {
+	lexWikiParseTheInterceptArticle();
+    } else if (urlHost.match(/arstechnica\.com$/)) {
+	lexWikiParseArsTechicaArticle();
+    } else if (urlHost.match(/politico\.com$/)) {
+	lexWikiParsePoliticoArticle();
+    } else if (urlHost.match(/lexington\.wickedlocal\.com$/)) {
+	lexWikiParseLexingtonMinutemanArticle();
+    } else if (urlHost.match(/cnn\.com$/)) {
+	lexWikiParseCNNArticle();
+    }
 }
 
