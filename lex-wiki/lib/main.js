@@ -47,6 +47,14 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
     }
     
     function lexWikiModifyContent(page_content) {
+	// Is the link already posted?
+	//	var regex = new RegExp(RegExp.quote(msg), "g");
+	//if (page_content.match(regex)) {
+	//  console.log("Link already included in page");
+	//  return "";
+	//}
+
+	console.log("Link not already included in page");
 	return "";
     }
 
