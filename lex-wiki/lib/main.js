@@ -40,15 +40,19 @@ function lexWikiMenuItemLogoutPredicate(context) {
     }
 }
 
-function lexWikiPost(msg, lexWikiNewsPage) {
+function lexWikiPost(msg, date, lexWikiNewsPage) {
     function lexWikiPageEditDone(response) {
 	console.log("Page edit done response: " + response.text.substr(0,1000));    
 	console.log("Page edit done response finished");    
     }
     
+    function lexWikiModifyContent(page_content) {
+	return "";
+    }
+
     function lexWikiPageInfo(response) {
 	var p = require('sdk/simple-prefs');  
-	var page_id, edit_token, last_edit_tstamp;
+	var page_id, edit_token, last_edit_tstamp, page_content;
 	
 	console.log("Page info response (json): " + response.text);    
 	
@@ -56,26 +60,33 @@ function lexWikiPost(msg, lexWikiNewsPage) {
 	    console.log("Page id: " + page);
 	    console.log("Page response edit token: " + response.json.query.pages[page].edittoken);
 	    console.log("Page last edit timestamp: " + response.json.query.pages[page].revisions[0].timestamp);
+	    console.log("Page content: " + response.json.query.pages[page].revisions[0]["*"]);
 	    
 	    page_id = page;
 	    edit_token = response.json.query.pages[page].edittoken;
 	    last_edit_tstamp = response.json.query.pages[page].revisions[0].timestamp;
+	    page_content = response.json.query.pages[page].revisions[0]["*"];
 	}
 	
-	var queryUrl = p.prefs['mediaWikiSite'] + "w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=" + encodeURIComponent(msg) + "%0A";
-	
-	var h = httpRequest({
-		url: queryUrl,
-		onComplete: lexWikiPageEditDone
-	    });
-	
-	h.post();
-	console.log("Post to " + queryUrl);
+	var modified_page_content = lexWikiModifyContent(page_content);
+	if (modified_page_content) {
+	    var queryUrl = p.prefs['mediaWikiSite'] + "w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=" + encodeURIComponent(msg) + "%0A";
+	    
+	    var h = httpRequest({
+		    url: queryUrl,
+		    onComplete: lexWikiPageEditDone
+		});
+	    
+	    h.post();
+	    console.log("Post to " + queryUrl);
+	} else {
+	    console.log("No post needed");
+	}
     }
     
     function lexWikiRequestPageInfo() {
 	var p = require('sdk/simple-prefs');    
-	var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=query&prop=info|revisions&intoken=edit&rvprop=timestamp&titles=" + /* lexWikiNewsPage */ "Test" + "&format=json";
+	var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=query&prop=info|revisions&intoken=edit&rvprop=content|timestamp&titles=" + /* lexWikiNewsPage */ "Test" + "&format=json";
 	
 	var h = httpRequest({
 		url: queryUrl,
@@ -106,7 +117,7 @@ function lexWikiEditWindow(newspaper, url, headline,
 	var r = window.confirm(msg + "\n\nSend to " + lexWikiNewsPage + "?\n");
 	if (r == true) {
 	    // OK was pressed
-	    lexWikiPost(msg, lexWikiNewsPage);
+	    lexWikiPost(msg, date, lexWikiNewsPage);
 	}
     }
 }
