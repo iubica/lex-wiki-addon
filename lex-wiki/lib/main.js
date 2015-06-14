@@ -24,7 +24,7 @@ function lexWikiPost(msg) {
 	    last_edit_tstamp = response.json.query.pages[p].revisions[0].timestamp;
 	}
 	
-	var queryUrl = "http://lex-wiki.org/w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=Some%20text<br/>%0A";
+	var queryUrl = "http://lex-wiki.org/w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=" + encodeURIComponent(msg) + "%0A";
 	
 	var h = httpRequest({
 		url: queryUrl,
