@@ -131,8 +131,16 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 
     console.log("lexWikiMenuLoginOnMessageFunction() called");
 
+    function lexWikiGetNewsPages(response) {
+	var p = require('sdk/simple-prefs');
+
+	console.log("Category News response (json): " + response.text);
+    }
+
     function lexWikiLogin3(response) {
-	var queryUrl = "http://lex-wiki.org/w/api.php?action=query&prop=info|revisions&intoken=edit&rvprop=timestamp&titles=Test&format=json";
+	var p = require('sdk/simple-prefs');
+
+	var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=query&list=categorymembers&cmtitle=Category:News&format=json";
 	
 	console.log("Login response 2 (json): " + response.text);
 	console.log("Login response 2 result: " + response.json.login.result);	
@@ -140,6 +148,13 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	if (response.json.login.result == "Success") {
 	    console.log("Login success");
 	    lexWikiLoginSuccess = true;
+
+	    var h = httpRequest({
+		    url: queryUrl,
+		    onComplete: lexWikiGetNewsPages
+		});
+	    
+	    h.post();
 	}
     }
     
@@ -148,7 +163,7 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	var user = p.prefs['mediaWikiUser'];
 	var pw = p.prefs['mediaWikiPassword'];
 	var token = response.json.login.token;
-	var loginUrl =  p.prefs['mediaWikiSite'] + "/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
+	var loginUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
 	
 	console.log("Login response 1 (json): " + response.text);
 	console.log("Login response 2 result: " + response.json.login.result);
