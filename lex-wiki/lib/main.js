@@ -12,6 +12,7 @@ var lexWikiURLContext = ["*.nytimes.com",
 			 "*.washingtonpost.com",
 			 "*.wsj.com",
 			 "*.bostonglobe.com",
+			 "*.bostonherald.com",
 			 "*.commonwealthmagazine.org",
 			 "*.reuters.com",
 			 "*.firstlook.org",
@@ -132,7 +133,6 @@ function lexWikiEditWindow(newspaper, url, headline,
     if (r == true) {
 	// OK was pressed
 	clipboard.set(msg);
-	lexWikiPost(msg);
     }
 }
 
@@ -141,9 +141,8 @@ function lexWikiEditWindow(newspaper, url, headline,
 // ahead of the definition of that function
 var menuItemLexWikiParent = contextMenu.Menu({
 	label: "Send to Lex-Wiki.org",
-	contentScript: 'self.on("click", function (node, data) {' +
-	'  console.log("You clicked " + data);' +
-	'});',
+	contentScriptFile: [data.url("article-parser.js"), data.url("menu-generic.js")],
+	onMessage: lexWikiMenuOnMessageFunction,
 	items: []
     });
 
@@ -313,86 +312,3 @@ var menuItemLexWikiLogout = contextMenu.Item({
 	onMessage: lexWikiMenuLogoutOnMessageFunction
     });
 
-var menuItemNewYorkTimes = contextMenu.Item({
-	label: "NY Times: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.nytimes.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-new-york-times.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemWashingtonPost = contextMenu.Item({
-	label: "WashPost: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.washingtonpost.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-washington-post.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemWallStJournal = contextMenu.Item({
-	label: "WSJ: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.wsj.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-wall-st-journal.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemBostonGlobe = contextMenu.Item({
-	label: "Boston Globe: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.bostonglobe.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-boston-globe.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemBostonHerald = contextMenu.Item({
-	label: "Boston Herald: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.bostonherald.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-boston-herald.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemCommonwealthMagazine = contextMenu.Item({
-	label: "Commonwealth Magazine: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.commonwealthmagazine.org"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-commonwealth-magazine.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemReuters = contextMenu.Item({
-	label: "Reuters: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.reuters.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-reuters.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemTheIntercept = contextMenu.Item({
-	label: "The Intercept: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.firstlook.org"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-the-intercept.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemArsTechnica = contextMenu.Item({
-	label: "Ars Technica: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.arstechnica.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-ars-technica.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemPolitico = contextMenu.Item({
-	label: "Politico: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.politico.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-politico.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemLexingtonMinuteman = contextMenu.Item({
-	label: "Lexington Minuteman: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.lexington.wickedlocal.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-lexington-minuteman.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
-
-var menuItemCNN = contextMenu.Item({
-	label: "CNN: Send to Lex-Wiki.org",
-	context: contextMenu.URLContext("*.cnn.com"),
-	contentScriptFile: [data.url("article-parser.js"), data.url("menu-cnn.js")],
-	onMessage: lexWikiMenuOnMessageFunction
-    });
