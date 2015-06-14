@@ -3,6 +3,27 @@ var contextMenu = require("sdk/context-menu");
 var clipboard = require("sdk/clipboard");
 var httpRequest = require("sdk/request").Request;
 
+// Global lex-wiki.org credential variables
+var lexWikiLoginToken = "";
+
+// Invoked by menuItemLexWikiLogin
+function lexWikiMenuItemLoginPredicate(context) {
+    if (lexWikiLoginToken) {
+	return false;
+    } else {
+	return true;
+    }
+}
+
+// Invoked by menuItemLexWikiLogout
+function lexWikiMenuItemLogoutPredicate(context) {
+    if (lexWikiLoginToken) {
+	return true;
+    } else {
+	return false;
+    }
+}
+
 function lexWikiPost(msg) {
     function lexWikiPageEditDone(response) {
 	console.log("Page edit done response: " + response.text.substr(0,1000));    
@@ -101,6 +122,21 @@ function lexWikiEditWindow(newspaper, url, headline,
     }
 }
 
+//
+// MenuOnMessage APIs
+//
+
+// For the lex-wiki.org login menu
+function lexWikiMenuLoginOnMessageFunction(a) {
+    console.log("lexWikiMenuLoginOnMessageFunction() called");
+}
+
+// For the lex-wiki.org logout menu
+function lexWikiMenuLogoutOnMessageFunction(a) {
+    console.log("lexWikiMenuLogoutOnMessageFunction() called");
+}
+
+// For URL parser menus
 function lexWikiMenuOnMessageFunction(a) {
     var source = a[0];
     var url = a[1];
@@ -112,6 +148,30 @@ function lexWikiMenuOnMessageFunction(a) {
     console.log(headline + ", by " + authors + " (" + date + ")");
     lexWikiEditWindow(source, url, headline, authors, date, description);
 }
+
+//
+// Menu items
+//
+
+// Lex-wiki.org login menu - used to load all other menu elements
+var menuItemLexWikiLogin = contextMenu.Item({
+	label: "Lex-Wiki.org login",
+	context: contextMenu.PredicateContext(lexWikiMenuItemLoginPredicate),
+	contentScript: 'self.on("click", function () {' +
+	'  self.postMessage("");' +
+	'});',
+	onMessage: lexWikiMenuLoginOnMessageFunction
+    });
+
+// Lex-wiki.org logout menu - used to clear all other menu elements
+var menuItemLexWikiLogout = contextMenu.Item({
+	label: "Lex-Wiki.org logout",
+	context: contextMenu.PredicateContext(lexWikiMenuItemLogoutPredicate),
+	contentScript: 'self.on("click", function () {' +
+	'  self.postMessage("");' +
+	'});',
+	onMessage: lexWikiMenuLogoutOnMessageFunction
+    });
 
 var menuItemNewYorkTimes = contextMenu.Item({
 	label: "NY Times: Send to Lex-Wiki.org",
