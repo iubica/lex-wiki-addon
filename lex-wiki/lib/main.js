@@ -124,15 +124,24 @@ function lexWikiPost(msg) {
 }
 
 function lexWikiEditWindow(newspaper, url, headline, 
-			   authors, date, description) {
+			   authors, date, description,
+			   lexWikiNewsPage) {
     var utils = require('sdk/window/utils');
     var browserWindow = utils.getMostRecentBrowserWindow();
     var window = browserWindow.content; // `window` object for the current webpage
     var msg = "* " + newspaper + ": [" + url + " " + headline + "], by " + authors + " (" + date + ")";
-    var r = window.confirm(msg + "\n\nCopy to clipboard?\n");
-    if (r == true) {
-	// OK was pressed
-	clipboard.set(msg);
+    
+    if (!lexWikiNewsPage) {
+	var r = window.confirm(msg + "\n\nCopy to clipboard?\n");
+	if (r == true) {
+	    // OK was pressed
+	    clipboard.set(msg);
+	}
+    } else {
+	var r = window.confirm(msg + "\n\nSend to " + lexWikiNewsPage + "?\n");
+	if (r == true) {
+	    // OK was pressed
+	}
     }
 }
 
@@ -283,14 +292,26 @@ function lexWikiMenuOnMessageFunction(a) {
     var authors = a[3];
     var date = a[4];
     var description = a[5];
+    var lexWikiNewsPage = a[6];
 
-    console.log(headline + ", by " + authors + " (" + date + ")");
-    lexWikiEditWindow(source, url, headline, authors, date, description);
+    console.log(headline + ", by " + authors + " (" + date + ") for " + 
+		lexWikiNewsPage);
+    lexWikiEditWindow(source, url, headline, authors, date, description,
+		      lexWikiNewsPage);
 }
 
 //
 // Menu items
 //
+
+var menuItemLexWikiSendToClipboard = contextMenu.Item({
+	label: "Send to clipboard",
+	data: "",
+	context: contextMenu.URLContext(lexWikiURLContext)
+    });
+
+// Add the Clipboard menu to 
+menuItemLexWikiParent.addItem(menuItemLexWikiSendToClipboard);
 
 // Lex-wiki.org login menu - used to load all other menu elements
 var menuItemLexWikiLogin = contextMenu.Item({
