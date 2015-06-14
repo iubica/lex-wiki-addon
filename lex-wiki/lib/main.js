@@ -135,6 +135,12 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	var p = require('sdk/simple-prefs');
 
 	console.log("Category News response (json): " + response.text);
+
+	// For each page in the 'News' category, create a menu button
+	for (var i = 0; i < response.json.query.categorymembers.length; i++) {
+	    console.log("Page id: " + response.json.query.categorymembers[i].pageid);
+	    console.log("Page title: " + response.json.query.categorymembers[i].title);
+	}
     }
 
     function lexWikiLogin3(response) {
