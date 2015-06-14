@@ -4,11 +4,11 @@ var clipboard = require("sdk/clipboard");
 var httpRequest = require("sdk/request").Request;
 
 // Global lex-wiki.org credential variables
-var lexWikiLoginToken = "";
+var lexWikiLoginSuccess = false;
 
 // Invoked by menuItemLexWikiLogin
 function lexWikiMenuItemLoginPredicate(context) {
-    if (lexWikiLoginToken) {
+    if (lexWikiLoginSuccess) {
 	return false;
     } else {
 	return true;
@@ -17,7 +17,7 @@ function lexWikiMenuItemLoginPredicate(context) {
 
 // Invoked by menuItemLexWikiLogout
 function lexWikiMenuItemLogoutPredicate(context) {
-    if (lexWikiLoginToken) {
+    if (lexWikiLoginSuccess) {
 	return true;
     } else {
 	return false;
@@ -101,8 +101,7 @@ function lexWikiPost(msg) {
 		onComplete: lexWikiLogin2
 	    });
 	
-	h.post();
-    
+	h.post();    
     }
     
     lexWikiLogin();
@@ -128,7 +127,57 @@ function lexWikiEditWindow(newspaper, url, headline,
 
 // For the lex-wiki.org login menu
 function lexWikiMenuLoginOnMessageFunction(a) {
+    var loginToken;
+
     console.log("lexWikiMenuLoginOnMessageFunction() called");
+
+    function lexWikiLogin3(response) {
+	var queryUrl = "http://lex-wiki.org/w/api.php?action=query&prop=info|revisions&intoken=edit&rvprop=timestamp&titles=Test&format=json";
+	
+	console.log("Login response 2 (json): " + response.text);
+	console.log("Login response 2 result: " + response.json.login.result);	
+
+	if (response.json.login.result == "Success") {
+	    console.log("Login success");
+	    lexWikiLoginSuccess = true;
+	}
+    }
+    
+    function lexWikiLogin2(response) {
+	var p = require('sdk/simple-prefs');
+	var user = p.prefs['mediaWikiUser'];
+	var pw = p.prefs['mediaWikiPassword'];
+	var token = response.json.login.token;
+	var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
+	
+	console.log("Login response 1 (json): " + response.text);
+	console.log("Login response 2 result: " + response.json.login.result);
+	console.log("Login response 1 token: " + response.json.login.token);
+	
+	var h = httpRequest({
+		url: loginUrl,
+		onComplete: lexWikiLogin3
+	    });
+	
+	h.post();
+    }
+    
+    function lexWikiLogin() {
+	// Log into MediaWiki
+	var p = require('sdk/simple-prefs');
+	var user = p.prefs['mediaWikiUser'];
+	var pw = p.prefs['mediaWikiPassword'];
+	var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&format=json";
+	
+	var h = httpRequest({
+		url: loginUrl,
+		onComplete: lexWikiLogin2
+	    });
+	
+	h.post();    
+    }
+
+    lexWikiLogin();    
 }
 
 // For the lex-wiki.org logout menu
