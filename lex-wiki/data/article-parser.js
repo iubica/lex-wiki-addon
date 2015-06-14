@@ -37,7 +37,7 @@ function lexWikiFormatAuthors(authorArray) {
     return authors;
 }
 
-function lexWikiParseNewYorkTimesArticle() {
+function lexWikiParseNewYorkTimesArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var metas = document.getElementsByTagName("meta");
     for (i=0; i < metas.length; i++) {
@@ -59,10 +59,11 @@ function lexWikiParseNewYorkTimesArticle() {
 	}
     }
 
-    self.postMessage(["New York Times", url, hdl, authors, date, descr]);    
+    self.postMessage(["New York Times", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseWashingtonPostArticle() {
+function lexWikiParseWashingtonPostArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
 
@@ -97,10 +98,11 @@ function lexWikiParseWashingtonPostArticle() {
     // Get the authors
     authors = lexWikiFormatAuthors(authorArray);
 
-    self.postMessage(["Washington Post", url, hdl, authors, date, descr]);    
+    self.postMessage(["Washington Post", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseWallStJournalArticle() {
+function lexWikiParseWallStJournalArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
 
@@ -160,10 +162,11 @@ function lexWikiParseWallStJournalArticle() {
 	}
     }
 
-    self.postMessage(["Wall St Journal", url, hdl, authors, date, descr]);    
+    self.postMessage(["Wall St Journal", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseBostonGlobeArticle() {
+function lexWikiParseBostonGlobeArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
 
@@ -200,10 +203,11 @@ function lexWikiParseBostonGlobeArticle() {
     // Get the authors
     authors = lexWikiFormatAuthors(authorArray);
 
-    self.postMessage(["Boston Globe", url, hdl, authors, date, descr]);    
+    self.postMessage(["Boston Globe", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseBostonHeraldArticle() {
+function lexWikiParseBostonHeraldArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
 
@@ -229,10 +233,11 @@ function lexWikiParseBostonHeraldArticle() {
     // Get the authors
     authors = lexWikiFormatAuthors(authorArray);
 
-    self.postMessage(["Boston Herald", url, hdl, authors, date, descr]);    
+    self.postMessage(["Boston Herald", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseCommonwealthMagazineArticle() {
+function lexWikiParseCommonwealthMagazineArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
 
@@ -272,10 +277,11 @@ function lexWikiParseCommonwealthMagazineArticle() {
     // Get the authors
     authors = lexWikiFormatAuthors(authorArray);
 
-    self.postMessage(["The Commonwealth", url, hdl, authors, date, descr]);    
+    self.postMessage(["The Commonwealth", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseReutersArticle() {
+function lexWikiParseReutersArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
 
     var metas = document.getElementsByTagName("meta");
@@ -303,10 +309,11 @@ function lexWikiParseReutersArticle() {
 	}
     }
 
-    self.postMessage(["Reuters", url, hdl, authors, date, descr]);    
+    self.postMessage(["Reuters", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseTheInterceptArticle() {
+function lexWikiParseTheInterceptArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
 
@@ -341,10 +348,11 @@ function lexWikiParseTheInterceptArticle() {
     // Get the authors
     authors = lexWikiFormatAuthors(authorArray);
 
-    self.postMessage(["The Intercept", url, hdl, authors, date, descr]);    
+    self.postMessage(["The Intercept", url, hdl, authors, date, descr,
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseArsTechicaArticle() {
+function lexWikiParseArsTechicaArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
     var authorArray = [];
 
@@ -382,10 +390,11 @@ function lexWikiParseArsTechicaArticle() {
     // Get the authors
     authors = lexWikiFormatAuthors(authorArray);
 
-    self.postMessage(["Ars Technica", url, hdl, authors, date, descr]);    
+    self.postMessage(["Ars Technica", url, hdl, authors, date, descr,
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParsePoliticoArticle() {
+function lexWikiParsePoliticoArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
 
     var metas = document.getElementsByTagName("meta");
@@ -407,10 +416,11 @@ function lexWikiParsePoliticoArticle() {
 	}
     }
     
-    self.postMessage(["Politico", url, hdl, authors, date, descr]);    
+    self.postMessage(["Politico", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseLexingtonMinutemanArticle() {
+function lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
 
     var metas = document.getElementsByTagName("meta");
@@ -442,10 +452,11 @@ function lexWikiParseLexingtonMinutemanArticle() {
     var d3 = new Date(d2.substring(0, 4), d2.substring(5, 6), d2.substring(7, 8));
     date = lexWikiFormatDate(d3);
 
-    self.postMessage(["Lexington Minuteman", url, hdl, authors, date, descr]);    
+    self.postMessage(["Lexington Minuteman", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseCNNArticle() {
+function lexWikiParseCNNArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
 
     var metas = document.getElementsByTagName("meta");
@@ -481,7 +492,8 @@ function lexWikiParseCNNArticle() {
 	hdl = h[0].innerHTML.trim();
     }
 
-    self.postMessage(["CNN", url, hdl, authors, date, descr]);    
+    self.postMessage(["CNN", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
 function lexWikiParseGenericArticle(node, data) {
@@ -493,29 +505,29 @@ function lexWikiParseGenericArticle(node, data) {
     console.log("Host " + window.location.host);
     
     if (urlHost.match(/nytimes\.com$/)) {
-	lexWikiParseNewYorkTimesArticle();
+	lexWikiParseNewYorkTimesArticle(lexWikiNewsPage);
     } else if (urlHost.match(/washingtonpost\.com$/)) {
-	lexWikiParseWashingtonPostArticle();
+	lexWikiParseWashingtonPostArticle(lexWikiNewsPage);
     } else if (urlHost.match(/wsj\.com$/)) {
-	lexWikiParseWallStJournalArticle();
+	lexWikiParseWallStJournalArticle(lexWikiNewsPage);
     } else if (urlHost.match(/bostonglobe\.com$/)) {
-	lexWikiParseBostonGlobeArticle();
+	lexWikiParseBostonGlobeArticle(lexWikiNewsPage);
     } else if (urlHost.match(/bostonherald\.com$/)) {
-	lexWikiParseBostonHeraldArticle();
+	lexWikiParseBostonHeraldArticle(lexWikiNewsPage);
     } else if (urlHost.match(/commonwealthmagazine\.org$/)) {
-	lexWikiParseCommonwealthMagazineArticle();
+	lexWikiParseCommonwealthMagazineArticle(lexWikiNewsPage);
     } else if (urlHost.match(/reuters\.com$/)) {
-	lexWikiParseReutersArticle();
+	lexWikiParseReutersArticle(lexWikiNewsPage);
     } else if (urlHost.match(/firstlook\.org$/)) {
-	lexWikiParseTheInterceptArticle();
+	lexWikiParseTheInterceptArticle(lexWikiNewsPage);
     } else if (urlHost.match(/arstechnica\.com$/)) {
-	lexWikiParseArsTechicaArticle();
+	lexWikiParseArsTechicaArticle(lexWikiNewsPage);
     } else if (urlHost.match(/politico\.com$/)) {
-	lexWikiParsePoliticoArticle();
+	lexWikiParsePoliticoArticle(lexWikiNewsPage);
     } else if (urlHost.match(/lexington\.wickedlocal\.com$/)) {
-	lexWikiParseLexingtonMinutemanArticle();
+	lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage);
     } else if (urlHost.match(/cnn\.com$/)) {
-	lexWikiParseCNNArticle();
+	lexWikiParseCNNArticle(lexWikiNewsPage);
     }
 }
 
