@@ -486,3 +486,7 @@ function lexWikiParseCNNArticle() {
     self.postMessage(["CNN", url, hdl, authors, date, descr]);    
 }
 
+function lexWikiParseGenericArticle(node, data) {
+    console.log("You clicked " + data);
+}
+
