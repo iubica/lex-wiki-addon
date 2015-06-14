@@ -7,6 +7,20 @@ var httpRequest = require("sdk/request").Request;
 var lexWikiLoginSuccess = false;
 var lexWikiMenuItems = [];
 
+// URLs supported
+var lexWikiURLContext = ["*.nytimes.com",
+			 "*.washingtonpost.com",
+			 "*.wsj.com",
+			 "*.bostonglobe.com",
+			 "*.commonwealthmagazine.org",
+			 "*.reuters.com",
+			 "*.firstlook.org",
+			 "*.arstechnica.com",
+			 "*.politico.com",
+			 "*.lexington.wickedlocal.com",
+			 "*.cnn.com"
+			 ];
+
 // Invoked by menuItemLexWikiLogin
 function lexWikiMenuItemLoginPredicate(context) {
     if (lexWikiLoginSuccess) {
@@ -156,7 +170,8 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	    // Create the menu item for this Mediawiki page
 	    var menuItem = contextMenu.Item({ 
 		    label: response.json.query.categorymembers[i].title, 
-		    data: response.json.query.categorymembers[i].title 
+		    data: response.json.query.categorymembers[i].title,
+		    context: contextMenu.URLContext(lexWikiURLContext)
 		});
 
 	    // Save in the global lexWikiMenuItems array, so we can remove
