@@ -148,7 +148,7 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	var user = p.prefs['mediaWikiUser'];
 	var pw = p.prefs['mediaWikiPassword'];
 	var token = response.json.login.token;
-	var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
+	var loginUrl =  p.prefs['mediaWikiSite'] + "/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&lgtoken=" + token + "&format=json";
 	
 	console.log("Login response 1 (json): " + response.text);
 	console.log("Login response 2 result: " + response.json.login.result);
@@ -167,7 +167,7 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	var p = require('sdk/simple-prefs');
 	var user = p.prefs['mediaWikiUser'];
 	var pw = p.prefs['mediaWikiPassword'];
-	var loginUrl = "http://lex-wiki.org/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&format=json";
+	var loginUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=login&lgname=" + user + "&lgpassword=" + pw + "&format=json";
 	
 	var h = httpRequest({
 		url: loginUrl,
@@ -183,6 +183,28 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 // For the lex-wiki.org logout menu
 function lexWikiMenuLogoutOnMessageFunction(a) {
     console.log("lexWikiMenuLogoutOnMessageFunction() called");
+
+    function lexWikiLogout2(response) {
+	console.log("Logout response (json): " + response.text);
+
+	// We're logged out
+	lexWikiLoginSuccess = false;
+    }
+
+    function lexWikiLogout() {
+	// Log into MediaWiki
+	var p = require('sdk/simple-prefs');
+	var logoutUrl =  p.prefs['mediaWikiSite'] + "/w/api.php?action=logout&format=json";
+	
+	var h = httpRequest({
+		url: logoutUrl,
+		onComplete: lexWikiLogout2
+	    });
+	
+	h.post();    
+    }
+
+    lexWikiLogout();
 }
 
 // For URL parser menus
