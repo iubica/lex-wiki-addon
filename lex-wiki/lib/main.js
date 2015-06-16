@@ -141,7 +141,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	
 	console.log("New page contents: " + new_page_contents);
 
-	return "";
+	return new_page_contents;
     }
 
     function lexWikiPageInfo(response) {
@@ -164,7 +164,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	
 	var modified_page_contents = lexWikiModifyContent(page_contents);
 	if (modified_page_contents) {
-	    var queryUrl = p.prefs['mediaWikiSite'] + "w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&prependtext=" + encodeURIComponent(msg) + "%0A";
+	    var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&text=" + encodeURIComponent(modified_page_contents) + "%0A&format=json";
 	    
 	    var h = httpRequest({
 		    url: queryUrl,
