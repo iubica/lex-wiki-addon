@@ -325,7 +325,11 @@ function lexWikiParseTheInterceptArticle(lexWikiNewsPage) {
 	if (metas[i].getAttribute("property") == "og:title") {
 	    var str = metas[i].getAttribute("content");
 	    var i1 = str.search(" - The Intercept");
-	    hdl = str.substring(0, i1);
+	    if (i1 >= 0) {
+		hdl = str.substring(0, i1);
+	    } else {
+		hdl = str;
+	    }
 	}
 	if (metas[i].getAttribute("property") == "description") {
 	    descr = metas[i].getAttribute("content");
