@@ -47,7 +47,10 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
     }
     
     function lexWikiModifyContent(page_contents) {
-	var idx, idx1;
+	var idx;
+	var idx_section_start, idx_section_end;
+	var idx_link_start, idx_link_end;
+	var date_obj = new Date(date);
 
 	// Is the link already posted?
 	if (page_contents.indexOf(msg) >= 0) {
@@ -58,27 +61,85 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	console.log("Link not already included in page");
 
 	// Look for section starting with == News
-	idx = page_contents.search(/\=\=\w*News/g);
+	idx = page_contents.search(/^== *News/g);
 	if (idx < 0) {
-	    idx = page_contents.search(/\=\=\w*Commentary/g);
+	    idx = page_contents.search(/^== *Commentary/g);
 	}
 	if (idx < 0) {
 	    console.log("No News or Commentary section");
 	    return "";
 	}
 	
+	console.log("Found matching News section");
+
 	// Skip past newline
-	idx1 = page_contents.substring(idx).search(/\n/);
-	if (idx1 < 0) {
+	idx_section_start = page_contents.substring(idx).search(/\n/);
+	if (idx_section_start < 0) {
 	    console.log("Can't find newline, invalidly formatted page");
 	    return "";
 	}
+
+	// Chomp the newline
+	idx_section_start++;
+
+	// Find the start of next '==' section; leave the result as '-1'
+	// if no match is found
+	idx_section_end = page_contents.substring(idx_section_start).search(/^==/g);
 	
-	var new_page_contents = page_contents.substring(0, idx + idx1 + 1);
+	// Keep parsing until we find an older date
+	idx_link_start = idx_section_start;
+	
+	while (true) {
+	    idx_link_end = page_contents.substring(idx_link_start).search(/^\*/g);
+	    if (idx_link_end < 0) {
+		// Reached the end of the list of entries; attach link
+		// right after idx_link_start.
+		break;
+	    }
+
+	    // Get the end of the line
+	    idx_link_end = page_contents.substring(idx_link_start).search(/\n/g);
+	    if (idx_link_end < 0) {
+		// Unexpectedly, did not find a newline. Insert right after
+		// the idx_link_start.
+		break;
+	    }
+	    
+	    // Get the line
+	    var line = page_contents.substring(idx_link_start, idx_link_start + idx_link_end);
+	    
+	    // Get what's inside parentheses
+	    var line_date_begin_idx = line.search(/\(([^\)]+)\) *$/g); 
+	    var line_date_end_idx = line.search(/\) *$/g); 
+	    if (line_date_begin_idx < 0 || line_date_end_idx < 0) {
+		break;
+	    }
+	    
+	    // Get the line date
+	    var line_date = line.substring(line_date_begin_idx + 1, line_date_end_idx);
+
+	    console.log("Found line date " + line_date);
+	    
+	    // Is the date newer?
+	    var line_date_obj = new Date(line_date);
+	    
+	    if (date_obj.getTime() >= line_date_obj.getTime()) {
+		// Yes we have a newer date - break out
+		console.log("New link date is newer");
+		break;
+	    }	    
+
+	    console.log("New link date is older");
+
+	    // Update the index
+	    idx_link_start += idx_link_end + 1;
+	}
+
+	var new_page_contents = page_contents.substring(0, idx_link_start);
 	new_page_contents += msg + '\n';
-	new_page_contents += page_contents.substring(idx + idx1 + 2);
+	new_page_contents += page_contents.substring(idx_link_start);
 	
-	console.log("New page contents")
+	console.log("New page contents: " + new_page_contents);
 
 	return "";
     }
