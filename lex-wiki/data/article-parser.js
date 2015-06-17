@@ -203,6 +203,17 @@ function lexWikiParseBostonGlobeArticle(lexWikiNewsPage) {
     // Get the authors
     authors = lexWikiFormatAuthors(authorArray);
 
+    // Some articles use a different format for authors
+    if (!authors) {
+	var b = document.querySelectorAll("b.author");
+	if (b.length >= 1) {
+	    var idx = b[0].innerHTML.search("By ");
+	    if (idx >= 0) {
+		authors = b[0].innerHTML.substring(idx + 3);
+	    }
+	}
+    }
+
     self.postMessage(["Boston Globe", url, hdl, authors, date, descr, 
 		      lexWikiNewsPage]);    
 }
