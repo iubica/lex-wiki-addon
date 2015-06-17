@@ -511,6 +511,39 @@ function lexWikiParseCNNArticle(lexWikiNewsPage) {
 		      lexWikiNewsPage]);    
 }
 
+function lexWikiParseTheAtlanticArticle(lexWikiNewsPage) {
+    var url="", hdl="", authors="", date="", descr="";
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:title") {
+	    hdl = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:description") {
+	    descr = metas[i].getAttribute("content");
+	}
+    }
+
+    var links = document.getElementsByTagName("link");
+    for (i=0; i < links.length; i++) {
+	if (links[i].getAttribute("rel") == "canonical") {
+	    url = links[i].getAttribute("href");
+	}
+    }
+
+    var t = document.querySelectorAll("time");
+    if (t.length > 0) {
+	var date_raw = t[0].getAttribute("datetime");
+	if (date_raw) {
+	    var d = new Date(date_raw);
+	    date = lexWikiFormatDate(d);
+	}	    
+    }
+
+    self.postMessage(["The Atlantic", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
+}
+
 function lexWikiParseGenericArticle(node, data) {
     var lexWikiNewsPage = data;
     var urlHost = window.location.host;
@@ -543,6 +576,8 @@ function lexWikiParseGenericArticle(node, data) {
 	lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage);
     } else if (urlHost.match(/cnn\.com$/)) {
 	lexWikiParseCNNArticle(lexWikiNewsPage);
+    } else if (urlHost.match(/theatlantic\.com$/)) {
+	lexWikiParseTheAtlanticArticle(lexWikiNewsPage);
     }
 }
 
