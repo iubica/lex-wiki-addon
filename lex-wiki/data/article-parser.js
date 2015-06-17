@@ -513,6 +513,7 @@ function lexWikiParseCNNArticle(lexWikiNewsPage) {
 
 function lexWikiParseTheAtlanticArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
 
     var metas = document.getElementsByTagName("meta");
     for (i=0; i < metas.length; i++) {
@@ -530,6 +531,14 @@ function lexWikiParseTheAtlanticArticle(lexWikiNewsPage) {
 	    url = links[i].getAttribute("href");
 	}
     }
+
+    var byline = document.querySelectorAll("div.article-cover-extra li.byline > a");
+    for (i=0; i < byline.length; i++) {
+	authorArray.push(byline[i].innerHTML);
+    }
+
+    // Get the authors
+    authors = lexWikiFormatAuthors(authorArray);
 
     var t = document.querySelectorAll("time");
     if (t.length > 0) {
