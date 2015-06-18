@@ -411,6 +411,7 @@ function lexWikiParseArsTechicaArticle(lexWikiNewsPage) {
 
 function lexWikiParsePoliticoArticle(lexWikiNewsPage) {
     var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
 
     var metas = document.getElementsByTagName("meta");
     for (i=0; i < metas.length; i++) {
@@ -426,11 +427,22 @@ function lexWikiParsePoliticoArticle(lexWikiNewsPage) {
 	if (metas[i].getAttribute("name") == "author") {
 	    authors = metas[i].getAttribute("content");
 	}
-	if (metas[i].getAttribute("name") == "date") {
-	    date = metas[i].getAttribute("content");
-	}
     }
+
+    authorArray = authors.split(" and ");
+
+    // Get the authors
+    authors = lexWikiFormatAuthors(authorArray);
     
+    var elts = document.querySelectorAll("p.timestamp > time");
+    if (elts.length > 0) {
+	var date_raw = elts[0].getAttribute("datetime");
+	if (date_raw) {
+	    var d = new Date(date_raw);
+	    date = lexWikiFormatDate(d);
+	}	    	
+    }
+
     self.postMessage(["Politico", url, hdl, authors, date, descr, 
 		      lexWikiNewsPage]);    
 }
