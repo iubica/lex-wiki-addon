@@ -52,6 +52,9 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	var idx_section_start, idx_section_end;
 	var idx_link_start, idx_link_end;
 	var date_obj = new Date(date);
+	var news_section, line;
+	var have_month_year_subsection = false;
+	var have_year_subsection = false;
 
 	// Is the link already posted?
 	if (page_contents.indexOf(msg) >= 0) {
@@ -62,9 +65,9 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	console.log("Link not already included in page");
 
 	// Look for section starting with == News
-	idx = page_contents.search(/^== *News/g);
+	idx = page_contents.search(/^== *News/m);
 	if (idx < 0) {
-	    idx = page_contents.search(/^== *Commentary/g);
+	    idx = page_contents.search(/^== *Commentary/m);
 	}
 	if (idx < 0) {
 	    console.log("No News or Commentary section");
@@ -85,8 +88,25 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 
 	// Find the start of next '==' section; leave the result as '-1'
 	// if no match is found
-	idx_section_end = page_contents.substring(idx_section_start).search(/^==/g);
+	var news_section_start = page_contents.substring(idx_section_start);
+	idx_section_end = news_section_start.search(/^==[^=]/m);
 	
+	// Get the news section
+	if (idx_section_end < 0) {
+	    news_section = news_section_start;
+	} else {
+	    news_section = news_section_start.substring(0, idx_section_end);
+	}
+
+	// Do we have any sections of type 'year' or 'month-year'?
+	if (news_section.search(/^=== *[a-zA-Z]* [1-9]/m) >= 0) {
+	    have_month_year_subsection = true;
+	    console.log("Detected month year subsections");
+	} else if (news_section.search(/^=== *[1-9]/m) >= 0) {
+	    have_year_subsection = true;
+	    console.log("Detected year subsections");
+	}
+
 	// Keep parsing until we find an older date
 	idx_link_start = idx_section_start;
 	
@@ -107,7 +127,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    }
 	    
 	    // Get the line
-	    var line = page_contents.substring(idx_link_start, idx_link_start + idx_link_end);
+	    line = page_contents.substring(idx_link_start, idx_link_start + idx_link_end);
 	    
 	    // Get what's inside parentheses
 	    var line_date_begin_idx = line.search(/\(([^\)]+)\) *$/g); 
