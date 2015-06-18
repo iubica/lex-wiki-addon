@@ -48,13 +48,14 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
     }
     
     function lexWikiModifyContent(page_contents) {
-	var idx;
+	var idx, new_idx;
 	var idx_section_start, idx_section_end;
 	var idx_link_start, idx_link_end;
 	var date_obj = new Date(date);
-	var news_section, line;
+	var news_section, updated_news_section, line;
 	var have_month_year_subsection = false;
 	var have_year_subsection = false;
+	var news_entries = [];
 
 	// Is the link already posted?
 	if (page_contents.indexOf(msg) >= 0) {
@@ -107,27 +108,29 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    console.log("Detected year subsections");
 	}
 
-	// Keep parsing until we find an older date
-	idx_link_start = idx_section_start;
-	
-	while (true) {
-	    idx_link_end = page_contents.substring(idx_link_start).search(/^\*/g);
-	    if (idx_link_end < 0) {
-		// Reached the end of the list of entries; attach link
-		// right after idx_link_start.
-		break;
-	    }
+	// Build array of news
+	idx = 0; 
+	new_idx = 0; 
 
-	    // Get the end of the line
-	    idx_link_end = page_contents.substring(idx_link_start).search(/\n/g);
+	for (idx_link_start = 0; ; idx_link_start += idx_link_end + 1) {
+	    idx_link_end = news_section.substring(idx_link_start).search(/^\*/m);
 	    if (idx_link_end < 0) {
-		// Unexpectedly, did not find a newline. Insert right after
-		// the idx_link_start.
+		// Reached the end of the list of entries
 		break;
 	    }
 	    
+	    // Move start to head of line
+	    idx_link_start += idx_link_end;
+
+	    // Search for newline at the end
+	    idx_link_end = news_section.substring(idx_link_start).search(/\n/g);
+	    if (idx_link_end < 0) {
+		// Unexpectedly, did not find a newline.
+		break;
+	    }
+
 	    // Get the line
-	    line = page_contents.substring(idx_link_start, idx_link_start + idx_link_end);
+	    line = news_section.substring(idx_link_start, idx_link_start + idx_link_end);
 	    
 	    // Get what's inside parentheses
 	    var line_date_begin_idx = line.search(/\(([^\)]+)\) *$/g); 
@@ -135,7 +138,11 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    if (line_date_begin_idx < 0 || line_date_end_idx < 0) {
 		break;
 	    }
-	    
+
+	    // Save the line, bump the idx
+	    news_entries.push(line);
+	    idx++;		    
+
 	    // Get the line date
 	    var line_date = line.substring(line_date_begin_idx + 1, line_date_end_idx);
 
@@ -145,24 +152,27 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    var line_date_obj = new Date(line_date);
 	    
 	    if (date_obj.getTime() >= line_date_obj.getTime()) {
-		// Yes we have a newer date - break out
-		console.log("New link date is newer");
-		break;
+		// Yes we have a newer date - save the new index
+		new_idx = idx - 1;
 	    }	    
+	}	
 
-	    console.log("New link date is older");
-
-	    // Update the index
-	    idx_link_start += idx_link_end + 1;
+	// Format the updated news section
+	updated_news_section = "";
+	for (idx = 0; idx < news_entries.length; idx ++) {
+	    if (idx == new_idx) {
+		updated_news_section += msg + '\n';
+	    }
+	    updated_news_section += news_entries[idx] + '\n';
 	}
 
-	var new_page_contents = page_contents.substring(0, idx_link_start);
-	new_page_contents += msg + '\n';
-	new_page_contents += page_contents.substring(idx_link_start);
+	var new_page_contents = page_contents.substring(0, idx_section_start);
+	new_page_contents += updated_news_section;
+	new_page_contents += page_contents.substring(idx_section_end);
 	
 	console.log("New page contents: " + new_page_contents);
 
-	return new_page_contents;
+	return "";
     }
 
     function lexWikiPageInfo(response) {
