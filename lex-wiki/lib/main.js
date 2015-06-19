@@ -42,6 +42,16 @@ function lexWikiMenuItemLogoutPredicate(context) {
     }
 }
 
+function lexWikiGetMonth(idx) {
+    var months = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+
+    if (idx < 0 || idx > 12) {
+	return "";
+    } else {
+	return months[idx];
+    }
+}
+
 function lexWikiPost(msg, date, lexWikiNewsPage) {
     function lexWikiPageEditDone(response) {
 	console.log("Page edit done response: " + response.text.substr(0,1000));    
@@ -49,14 +59,16 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
     }
     
     function lexWikiModifyContent(page_contents) {
-	var idx, new_idx;
+	var idx;
 	var idx_section_start, idx_section_end;
 	var idx_link_start, idx_link_end;
 	var date_obj = new Date(date);
 	var news_section, updated_news_section, line;
 	var have_month_year_subsection = false;
 	var have_year_subsection = false;
+	var new_item_inserted = false;
 	var news_entries = [];
+	var old_month, old_year;
 
 	// Is the link already posted?
 	if (page_contents.indexOf(msg) >= 0) {
@@ -110,9 +122,6 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	}
 
 	// Build array of news
-	idx = 0; 
-	new_idx = 0; 
-
 	for (idx_link_start = 0; ; idx_link_start += idx_link_end + 1) {
 	    idx_link_end = news_section.substring(idx_link_start).search(/^\*/m);
 	    if (idx_link_end < 0) {
@@ -140,10 +149,6 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 		break;
 	    }
 
-	    // Save the line, bump the idx
-	    news_entries.push(line);
-	    idx++;		    
-
 	    // Get the line date
 	    var line_date = line.substring(line_date_begin_idx + 1, line_date_end_idx);
 
@@ -153,18 +158,37 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    var line_date_obj = new Date(line_date);
 	    
 	    if (date_obj.getTime() >= line_date_obj.getTime()) {
-		// Yes we have a newer date - save the new index
-		new_idx = idx - 1;
+		// Save the new item ahead of the old
+		news_entries.push([msg, date_obj]);
+		new_item_inserted = true;
 	    }	    
+
+	    // Save the line, bump the idx
+	    news_entries.push([line, line_date_obj]);
 	}	
 
 	// Format the updated news section
-	updated_news_section = "";
-	for (idx = 0; idx < news_entries.length; idx ++) {
-	    if (idx == new_idx) {
-		updated_news_section += msg + '\n';
-	    }
-	    updated_news_section += news_entries[idx] + '\n';
+	old_month = 0;
+	old_year = 0;
+	updated_news_section = "";	
+	for (idx = 0; idx < news_entries.length; idx++) {
+	    // Get the current item year and month_year
+	    var new_month = news_entries[idx][1].getMonth();
+	    var new_year = news_entries[idx][1].getFullYear();
+	    
+	    if (have_year_subsection) {
+		if (new_year != old_year) {
+		    updated_news_section += "\n=== " + new_year + " ===\n";
+		}
+	    } else if (have_month_year_subsection) {
+		if (new_month != old_month || new_year != old_year) {
+		    updated_news_section += "\n=== " + lexWikiGetMonth(new_month) + " " + new_year + " ===\n";
+		}
+	    } 
+
+	    updated_news_section += news_entries[idx][0] + '\n';
+	    old_month = new_month;
+	    old_year = new_year;
 	}
 
 	var new_page_contents = page_contents.substring(0, idx_section_start);
@@ -173,7 +197,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	
 	console.log("New page contents: " + new_page_contents);
 
-	return "";
+	return new_page_contents;
     }
 
     function lexWikiPageInfo(response) {
