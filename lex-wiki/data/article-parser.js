@@ -596,7 +596,7 @@ function lexWikiParseUSNewsAndWorldReportArticle(lexWikiNewsPage) {
 	}
     }
     
-    var byline = document.querySelectorAll("meta.swiftype");
+    var byline = document.querySelectorAll("meta.swiftype[name='author']");
     if (byline.length > 0) {
 	authors = byline[0].getAttribute("content");
     }
