@@ -565,6 +565,46 @@ function lexWikiParseTheAtlanticArticle(lexWikiNewsPage) {
 		      lexWikiNewsPage]);    
 }
 
+function lexWikiParseUSNewsAndWorldReportArticle(lexWikiNewsPage) {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("property") == "og:url") {
+	    url = metas[i].getAttribute("content");
+	} else if (metas[i].getAttribute("name") == "og:description") {
+	    descr = metas[i].getAttribute("content");
+	} else if (metas[i].getAttribute("property") == "og:title") {
+	    var str = metas[i].getAttribute("content");
+	    var i1 = str.search(" - US News");
+	    hdl = str.substring(0, i1);
+	} else if (metas[i].getAttribute("property") == 
+		   "article:published_time") {
+	    var date_raw = metas[i].getAttribute("content");
+	    if (date_raw) {
+		var d = new Date(date_raw);
+		date = lexWikiFormatDate(d);
+	    }	    
+	} 
+    }
+    
+    var links = document.getElementsByTagName("link");
+    for (i=0; i < links.length; i++) {
+	if (links[i].getAttribute("rel") == "canonical") {
+	    url = links[i].getAttribute("href");
+	}
+    }
+    
+    var byline = document.querySelectorAll("meta.swiftype");
+    if (byline.length > 0) {
+	authors = byline[0].getAttribute("content");
+    }
+    
+    self.postMessage(["US News & World Report", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
+}
+
 function lexWikiParseGenericArticle(node, data) {
     var lexWikiNewsPage = data;
     var urlHost = window.location.host;
@@ -599,6 +639,8 @@ function lexWikiParseGenericArticle(node, data) {
 	lexWikiParseCNNArticle(lexWikiNewsPage);
     } else if (urlHost.match(/theatlantic\.com$/)) {
 	lexWikiParseTheAtlanticArticle(lexWikiNewsPage);
+    } else if (urlHost.match(/usnews\.com$/)) {
+	lexWikiParseUSNewsAndWorldReportArticle(lexWikiNewsPage);
     }
 }
 
