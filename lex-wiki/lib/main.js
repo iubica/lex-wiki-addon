@@ -43,7 +43,7 @@ function lexWikiMenuItemLogoutPredicate(context) {
 }
 
 function lexWikiGetMonth(idx) {
-    var months = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
     if (idx < 0 || idx > 12) {
 	return "";
@@ -193,7 +193,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 
 	var new_page_contents = page_contents.substring(0, idx_section_start);
 	new_page_contents += updated_news_section;
-	new_page_contents += page_contents.substring(idx_section_end);
+	new_page_contents += page_contents.substring(idx_section_start + idx_section_end);
 	
 	console.log("New page contents: " + new_page_contents);
 
