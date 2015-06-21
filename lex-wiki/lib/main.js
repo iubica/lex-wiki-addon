@@ -289,7 +289,6 @@ var menuItemLexWikiParent = contextMenu.Menu({
 
 // For the lex-wiki.org login menu
 function lexWikiMenuLoginOnMessageFunction(a) {
-    var loginToken;
 
     console.log("lexWikiMenuLoginOnMessageFunction() called");
 
@@ -297,6 +296,11 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	var p = require('sdk/simple-prefs');
 
 	console.log("Category News response (json): " + response.text);
+
+	if (lexWikiMenuItems.length > 0) {
+	    // Already logged in
+	    return;
+	}
 
 	// For each page in the 'News' category, create a menu button
 	for (var i = 0; i < response.json.query.categorymembers.length; i++) {
