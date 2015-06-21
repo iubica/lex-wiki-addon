@@ -157,7 +157,8 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    // Is the date newer?
 	    var line_date_obj = new Date(line_date);
 	    
-	    if (date_obj.getTime() >= line_date_obj.getTime()) {
+	    if (!new_item_inserted &&
+		date_obj.getTime() >= line_date_obj.getTime()) {
 		// Save the new item ahead of the old
 		news_entries.push([msg, date_obj]);
 		new_item_inserted = true;
@@ -192,7 +193,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	}
 
 	var new_page_contents = page_contents.substring(0, idx_section_start);
-	new_page_contents += updated_news_section;
+	new_page_contents += updated_news_section + '\n';
 	new_page_contents += page_contents.substring(idx_section_start + idx_section_end);
 	
 	console.log("New page contents: " + new_page_contents);
