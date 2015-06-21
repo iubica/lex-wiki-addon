@@ -60,6 +60,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
     
     function lexWikiModifyContent(page_contents) {
 	var idx;
+	var idx_news_section_start;
 	var idx_section_start, idx_section_end;
 	var idx_link_start, idx_link_end;
 	var date_obj = new Date(date);
@@ -79,11 +80,11 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	console.log("Link not already included in page");
 
 	// Look for section starting with == News
-	idx = page_contents.search(/^== *News/m);
-	if (idx < 0) {
-	    idx = page_contents.search(/^== *Commentary/m);
+	idx_news_section_start = page_contents.search(/^== *News/m);
+	if (idx_news_section_start < 0) {
+	    idx_news_section_start = page_contents.search(/^== *Commentary/m);
 	}
-	if (idx < 0) {
+	if (idx_news_section_start < 0) {
 	    console.log("No News or Commentary section");
 	    return "";
 	}
@@ -91,7 +92,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	console.log("Found matching News section");
 
 	// Skip past newline
-	idx_section_start = page_contents.substring(idx).search(/\n/);
+	idx_section_start = page_contents.substring(idx_news_section_start).search(/\n/);
 	if (idx_section_start < 0) {
 	    console.log("Can't find newline, invalidly formatted page");
 	    return "";
@@ -102,7 +103,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 
 	// Find the start of next '==' section; leave the result as '-1'
 	// if no match is found
-	var news_section_start = page_contents.substring(idx_section_start);
+	var news_section_start = page_contents.substring(idx_news_section_start + idx_section_start);
 	idx_section_end = news_section_start.search(/^==[^=]/m);
 	
 	// Get the news section
@@ -192,9 +193,9 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    old_year = new_year;
 	}
 
-	var new_page_contents = page_contents.substring(0, idx_section_start);
+	var new_page_contents = page_contents.substring(0, idx_news_section_start + idx_section_start);
 	new_page_contents += updated_news_section + '\n';
-	new_page_contents += page_contents.substring(idx_section_start + idx_section_end);
+	new_page_contents += page_contents.substring(idx_news_section_start + idx_section_start + idx_section_end);
 	
 	console.log("New page contents: " + new_page_contents);
 
