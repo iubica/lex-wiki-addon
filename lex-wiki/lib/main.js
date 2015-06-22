@@ -104,7 +104,10 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	// Find the start of next '==' section; leave the result as '-1'
 	// if no match is found
 	var news_section_start = page_contents.substring(idx_news_section_start + idx_section_start);
-	idx_section_end = news_section_start.search(/^==[^=]/m);
+	idx_section_end = news_section_start.search(/^\s*==[^=]/m);
+	if (idx_section_end < 0) {
+	    idx_section_end = news_section_start.search(/^\s*[^=\*]/m);
+	}
 	
 	// Get the news section
 	if (idx_section_end < 0) {
