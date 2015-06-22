@@ -338,6 +338,20 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 	    // Add the menu item to the parent menu
 	    menuItemLexWikiParent.addItem(menuItem);
 	}
+
+	// Should we send a continuation?
+	if (response.json["query-continue"]) {
+	    if (response.json["query-continue"].categorymembers &&
+		response.json["query-continue"].categorymembers.cmcontinue) {
+		var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=query&list=categorymembers&cmtitle=Category:News&format=json&cmcontinue=" + response.json["query-continue"].categorymembers.cmcontinue;
+		var h = httpRequest({
+			url: queryUrl,
+			onComplete: lexWikiGetNewsPages
+		    });
+		
+		h.post();				
+	    }
+	}
     }
 
     function lexWikiLogin3(response) {
