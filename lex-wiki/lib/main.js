@@ -301,16 +301,28 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 
 	console.log("Category News response (json): " + response.text);
 
-	if (lexWikiMenuItems.length > 0) {
-	    // Already logged in
-	    return;
-	}
-
 	// For each page in the 'News' category, create a menu button
 	for (var i = 0; i < response.json.query.categorymembers.length; i++) {
+	    var already_added = false;
+
 	    console.log("Page id: " + response.json.query.categorymembers[i].pageid);
 	    console.log("Page title: " + response.json.query.categorymembers[i].title);
-	    
+
+	    // Make sure the title is not already listed in the menu. This
+	    // is possible if multiple login requests execute before
+	    // the News category is retrieved.
+	    for (var j = 0; j < lexWikiMenuItems.length; j++) {
+		if (lexWikiMenuItems[j][1] == 
+		    response.json.query.categorymembers[i].title) {
+		    already_added = true;
+		    break;
+		}
+	    }
+
+	    if (already_added) {
+		continue;
+	    }
+
 	    // Create the menu item for this Mediawiki page
 	    var menuItem = contextMenu.Item({ 
 		    label: response.json.query.categorymembers[i].title, 
@@ -320,7 +332,8 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 
 	    // Save in the global lexWikiMenuItems array, so we can remove
 	    // this menu item later when we log out 
-	    lexWikiMenuItems.push(menuItem);
+	    lexWikiMenuItems.push([menuItem, 
+				   response.json.query.categorymembers[i].title]);
 
 	    // Add the menu item to the parent menu
 	    menuItemLexWikiParent.addItem(menuItem);
@@ -394,7 +407,7 @@ function lexWikiMenuLogoutOnMessageFunction(a) {
 
 	// Remove all menu items from the parent menu
 	for (var i = 0; i < lexWikiMenuItems.length; i++) {
-	    menuItemLexWikiParent.removeItem(lexWikiMenuItems[i]);
+	    menuItemLexWikiParent.removeItem(lexWikiMenuItems[i][0]);
 	    delete lexWikiMenuItems[i];
 	}
 	
