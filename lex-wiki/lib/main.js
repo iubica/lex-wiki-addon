@@ -106,7 +106,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	var news_section_start = page_contents.substring(idx_news_section_start + idx_section_start);
 	idx_section_end = news_section_start.search(/^\s*==[^=]/m);
 	if (idx_section_end < 0) {
-	    idx_section_end = news_section_start.search(/^\s*[^=\*]/m);
+	    idx_section_end = news_section_start.search(/^\s*[^=\*\n]/m);
 	}
 	
 	// Get the news section
