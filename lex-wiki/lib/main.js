@@ -59,7 +59,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
     }
     
     function lexWikiModifyContent(page_contents) {
-	var idx;
+	var idx, idx1;
 	var idx_news_section_start;
 	var idx_section_start, idx_section_end;
 	var idx_link_start, idx_link_end;
@@ -161,7 +161,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    // Is the date newer?
 	    var line_date_obj = new Date(line_date);
 	    
-	    if (!new_item_inserted &&
+	    if (!new_item_inserted && line_date_obj &&
 		date_obj.getTime() >= line_date_obj.getTime()) {
 		// Save the new item ahead of the old
 		news_entries.push([msg, date_obj]);
@@ -172,28 +172,49 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    news_entries.push([line, line_date_obj]);
 	}	
 
+	// Count the news stories in each year
+	var news_per_year = new Object();
+	for (idx = 0; idx < news_entries.length; idx++) {
+	    var line_date_obj = news_entries[idx][1];
+	    var year = line_date_obj.getFullYear();
+
+	    if (line_date_obj && year) {
+		if (!news_per_year[year]) {
+		    news_per_year[year] = 1;
+		} else {
+		    news_per_year[year]++;
+		}
+	    }
+	}
+
 	// Format the updated news section
 	old_month = 0;
 	old_year = 0;
 	updated_news_section = "";	
 	for (idx = 0; idx < news_entries.length; idx++) {
-	    // Get the current item year and month_year
-	    var new_month = news_entries[idx][1].getMonth();
-	    var new_year = news_entries[idx][1].getFullYear();
-	    
-	    if (have_year_subsection) {
-		if (new_year != old_year) {
-		    updated_news_section += "\n=== " + new_year + " ===\n";
-		}
-	    } else if (have_month_year_subsection) {
-		if (new_month != old_month || new_year != old_year) {
-		    updated_news_section += "\n=== " + lexWikiGetMonth(new_month) + " " + new_year + " ===\n";
-		}
-	    } 
+	    // Get the current item year and month_year. This object may be NULL
+	    // in case the date line contains non-parsable format, for example
+	    // June/July/August 2015 instead of something like June 1, 2015.
+	    var line_date_obj = news_entries[idx][1];
+	    var new_month = line_date_obj.getMonth();
+	    var new_year = line_date_obj.getFullYear();
+
+	    if (line_date_obj && new_month && new_year) {	    
+		if (have_year_subsection ||
+		    (have_month_year_subsection && news_per_year[new_year] <= 7)) {
+		    if (new_year != old_year) {
+			updated_news_section += "\n=== " + new_year + " ===\n";
+		    }
+		} else if (have_month_year_subsection) {
+		    if (new_month != old_month || new_year != old_year) {
+			updated_news_section += "\n=== " + lexWikiGetMonth(new_month) + " " + new_year + " ===\n";
+		    }
+		} 
+		old_month = new_month;
+		old_year = new_year;
+	    }
 
 	    updated_news_section += news_entries[idx][0] + '\n';
-	    old_month = new_month;
-	    old_year = new_year;
 	}
 
 	var new_page_contents = page_contents.substring(0, idx_news_section_start + idx_section_start);
