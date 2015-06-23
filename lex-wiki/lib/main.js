@@ -225,10 +225,61 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	
 	var modified_page_contents = lexWikiModifyContent(page_contents);
 	if (modified_page_contents) {
-	    var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=edit&pageid=" + page_id + "&contentformat=text/x-wiki&contentmodel=wikitext&basetimestamp=" + last_edit_tstamp + "&token=" + encodeURIComponent(edit_token) + "&summary=Add-on%20edit&text=" + encodeURIComponent(modified_page_contents) + "%0A&format=json";
+	    var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php";
+	    var contents_boundary = "---------------------------" + Date.now().toString(16);
+	    var page_contents;
+
+	    page_contents = "\n\n";
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"action\"\n\n";
+	    page_contents += "edit\n";
+
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"pageid\"\n\n";
+	    page_contents += page_id + "\n";
+
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"contentformat\"\n\n";
+	    page_contents += "text/x-wiki\n";
+
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"contentmodel\"\n\n";
+	    page_contents += "wikitext\n";
+
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"basetimestamp\"\n\n";
+	    page_contents += last_edit_tstamp + "\n";
+
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"token\"\n\n";
+	    page_contents += edit_token + "\n";
+
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"summary\"\n";
+	    page_contents += "Content-Type: text/plain; charset=UTF-8\n";
+	    page_contents += "Content-Transfer-Encoding: 8bit\n\n";
+	    page_contents += "Add-on edit\n";
 	    
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"text\"\n";
+	    page_contents += "Content-Type: text/plain; charset=UTF-8\n";
+	    page_contents += "Content-Transfer-Encoding: 8bit\n\n";
+	    page_contents += modified_page_contents;
+
+	    if (modified_page_contents.slice(-1) != "\n") {
+		page_contents += "\n";
+	    }
+
+	    page_contents += "--" + contents_boundary + "\n";
+	    page_contents += "Content-Disposition: form-data; name=\"format\"\n\n";
+	    page_contents += "json\n";
+	    page_contents += "--" + contents_boundary + "\n";
+	    
+
 	    var h = httpRequest({
 		    url: queryUrl,
+		    contentType: "multipart/form-data; boundary=" + contents_boundary,
+		    content: page_contents,
 		    onComplete: lexWikiPageEditDone
 		});
 	    
