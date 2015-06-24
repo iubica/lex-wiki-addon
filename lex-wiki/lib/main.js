@@ -201,7 +201,8 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 
 	    if (line_date_obj && new_month && new_year) {	    
 		if (have_year_subsection ||
-		    (have_month_year_subsection && news_per_year[new_year] <= 7)) {
+		    (have_month_year_subsection && 
+		     news_per_year[new_year] <= 20)) {
 		    if (new_year != old_year) {
 			updated_news_section += "\n=== " + new_year + " ===\n";
 		    }
