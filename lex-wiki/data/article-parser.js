@@ -27,8 +27,10 @@ function lexWikiFormatDate(date) {
 	    return lexWikiFormatDate(d);
 	}
 	
+	// Dates of format YYYY-MM-DD, followed by non-standard stuff.
+	// This is the case of Washington Post.
 	var dateArray = date.match(/\d{4}-\d{2}-\d{2}/);
-	if (dateArray[0]) {
+	if (dateArray && dateArray[0]) {
 	    var d = new Date(dateArray[0]);
 	    return lexWikiFormatDate(d);
 	}
@@ -69,12 +71,15 @@ function lexWikiParseNewYorkTimesArticle(lexWikiNewsPage) {
 	if (metas[i].getAttribute("name") == "author") {
 	    authors = metas[i].getAttribute("content");
 	}
-	if (metas[i].getAttribute("name") == "dat") {
-	    date = metas[i].getAttribute("content");
-	}
 	if (metas[i].getAttribute("property") == "twitter:description") {
 	    descr = metas[i].getAttribute("content");
 	}
+    }
+
+    var time = document.querySelectorAll("time.dateline");
+    if (time.length) {
+	var date_raw = time[0].getAttribute("datetime");
+	date = lexWikiFormatDate(date_raw);
     }
 
     self.postMessage(["New York Times", url, hdl, authors, date, descr, 
