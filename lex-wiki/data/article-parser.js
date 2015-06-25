@@ -1,22 +1,37 @@
-function lexWikiFormatDate(d) {
+var lexWikiMonths = ["Jan",
+		     "Feb",
+		     "Mar",
+		     "Apr",
+		     "May",
+		     "June",
+		     "July",
+		     "Aug",
+		     "Sept",
+		     "Oct",
+		     "Nov",
+		     "Dec"];
+		
+
+function lexWikiFormatDate(date) {
     // Argument is assumed to be a javascript Date object
 
-    var month = new Array();
-    
-    month[0] = "Jan";
-    month[1] = "Feb";
-    month[2] = "Mar";
-    month[3] = "Apr";
-    month[4] = "May";
-    month[5] = "June";
-    month[6] = "July";
-    month[7] = "Aug";
-    month[8] = "Sept";
-    month[9] = "Oct";
-    month[10] = "Nov";
-    month[11] = "Dec";
-		
-    return month[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+    if (typeof date == 'object') {
+	// A 'Date' object
+	return lexWikiMonths[date.getMonth()] + " " + 
+	    date.getDate() + ", " + date.getFullYear();
+    } else if (typeof date == 'string') {
+	if (date == "") {
+	    return "";
+	}
+
+	var d = new Date(date);
+
+	if (d != undefined) {
+	    return lexWikiFormatDate(d);
+	} else {
+	    return "unknown date";
+	}
+    }
 }
 
 function lexWikiFormatAuthors(authorArray) {
@@ -87,11 +102,7 @@ function lexWikiParseWashingtonPostArticle(lexWikiNewsPage) {
 	}
 	if (spans[i].getAttribute("itemprop") == "datePublished") {
 	    var date_raw = spans[i].getAttribute("content");
-	    
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }
+	    date = lexWikiFormatDate(date_raw);
 	}
     }
     
@@ -122,11 +133,7 @@ function lexWikiParseWallStJournalArticle(lexWikiNewsPage) {
 	}
 	if (metas[i].getAttribute("name") == "article.published") {
 	    var date_raw = metas[i].getAttribute("content");
-	    
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }
+	    date = lexWikiFormatDate(date_raw);
 	}
     }
     
@@ -185,11 +192,7 @@ function lexWikiParseBostonGlobeArticle(lexWikiNewsPage) {
 	}
 	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
 	    var date_raw = metas[i].getAttribute("content");
-	    
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }
+	    date = lexWikiFormatDate(date_raw);
 	}
     }
     
@@ -232,9 +235,7 @@ function lexWikiParseBostonHeraldArticle(lexWikiNewsPage) {
 	    url = parsely.link;
 	    hdl = parsely.title;
 	    authorArray = parsely.authors;
-	    
-	    var d = new Date(parsely.pub_date);
-	    date = lexWikiFormatDate(d);
+	    date = lexWikiFormatDate(parsely.pub_date);
 	}
 	if (metas[i].getAttribute("property") == "description") {
 	    descr = metas[i].getAttribute("content");
@@ -267,11 +268,7 @@ function lexWikiParseCommonwealthMagazineArticle(lexWikiNewsPage) {
 	}
 	if (metas[i].getAttribute("property") == "article:published_time") {
 	    var date_raw = metas[i].getAttribute("content");
-	    
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }
+	    date = lexWikiFormatDate(date_raw);
 	}
     }
     
@@ -312,11 +309,7 @@ function lexWikiParseReutersArticle(lexWikiNewsPage) {
 	}
 	if (metas[i].getAttribute("name") == "REVISION_DATE") {
 	    var date_raw = metas[i].getAttribute("content");
-	    
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }
+	    date = lexWikiFormatDate(date_raw);
 	}
     }
 
@@ -347,11 +340,7 @@ function lexWikiParseTheInterceptArticle(lexWikiNewsPage) {
 	}
 	if (metas[i].getAttribute("property") == "article:published_time") {
 	    var date_raw = metas[i].getAttribute("content");
-	    
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }
+	    date = lexWikiFormatDate(date_raw);
 	}
     }
     
@@ -380,10 +369,7 @@ function lexWikiParseArsTechicaArticle(lexWikiNewsPage) {
 		    if (k == "title") {
 			hdl = v;
 		    } else if (k == "pub_date") {
-			if (v) {
-			    var d = new Date(v);
-			    date = lexWikiFormatDate(d);
-			}
+			date = lexWikiFormatDate(v);
 		    }
 		});
 	}
@@ -437,10 +423,7 @@ function lexWikiParsePoliticoArticle(lexWikiNewsPage) {
     var elts = document.querySelectorAll("p.timestamp > time");
     if (elts.length > 0) {
 	var date_raw = elts[0].getAttribute("datetime");
-	if (date_raw) {
-	    var d = new Date(date_raw);
-	    date = lexWikiFormatDate(d);
-	}	    	
+	date = lexWikiFormatDate(date_raw);
     }
 
     self.postMessage(["Politico", url, hdl, authors, date, descr, 
@@ -500,10 +483,7 @@ function lexWikiParseCNNArticle(lexWikiNewsPage) {
 	    metas[i].getAttribute("name") == "pubdate" ||
 	    metas[i].getAttribute("name") == "lastmod" ) {
 	    var date_raw = metas[i].getAttribute("content");
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }	    
+	    date = lexWikiFormatDate(date_raw);
 	}
     }
 
@@ -555,10 +535,7 @@ function lexWikiParseTheAtlanticArticle(lexWikiNewsPage) {
     var t = document.querySelectorAll("time");
     if (t.length > 0) {
 	var date_raw = t[0].getAttribute("datetime");
-	if (date_raw) {
-	    var d = new Date(date_raw);
-	    date = lexWikiFormatDate(d);
-	}	    
+	date = lexWikiFormatDate(date_raw);
     }
 
     self.postMessage(["The Atlantic", url, hdl, authors, date, descr, 
@@ -582,10 +559,7 @@ function lexWikiParseUSNewsAndWorldReportArticle(lexWikiNewsPage) {
 	} else if (metas[i].getAttribute("property") == 
 		   "article:published_time") {
 	    var date_raw = metas[i].getAttribute("content");
-	    if (date_raw) {
-		var d = new Date(date_raw);
-		date = lexWikiFormatDate(d);
-	    }	    
+	    date = lexWikiFormatDate(date_raw);
 	} 
     }
     
