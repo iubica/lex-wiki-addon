@@ -20,17 +20,20 @@ function lexWikiFormatDate(date) {
 	return lexWikiMonths[date.getMonth()] + " " + 
 	    date.getDate() + ", " + date.getFullYear();
     } else if (typeof date == 'string') {
-	if (date == "") {
-	    return "";
-	}
+	var v = Date.parse(date);
 
-	var d = new Date(date);
-
-	if (d != undefined) {
+	if (!isNaN(v)) {
+	    var d = new Date(date);
 	    return lexWikiFormatDate(d);
-	} else {
-	    return "unknown date";
 	}
+	
+	var dateArray = date.match(/\d{4}-\d{2}-\d{2}/);
+	if (dateArray[0]) {
+	    var d = new Date(dateArray[0]);
+	    return lexWikiFormatDate(d);
+	}
+
+	return "";
     }
 }
 
