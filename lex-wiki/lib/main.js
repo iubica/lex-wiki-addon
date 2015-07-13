@@ -19,9 +19,11 @@ var lexWikiURLContext = ["*.nytimes.com",
 			 "*.arstechnica.com",
 			 "*.politico.com",
 			 "*.lexington.wickedlocal.com",
+			 "*.telegram.com",
 			 "*.cnn.com",
 			 "*.theatlantic.com",
-			 "*.usnews.com"
+			 "*.usnews.com",
+			 "*.usatoday.com"
 			 ];
 
 // Invoked by menuItemLexWikiLogin
