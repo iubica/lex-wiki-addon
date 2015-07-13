@@ -198,10 +198,6 @@ function lexWikiParseBostonGlobeArticle(lexWikiNewsPage) {
 	if (metas[i].getAttribute("property") == "description") {
 	    descr = metas[i].getAttribute("content");
 	}
-	if (metas[i].getAttribute("name") == "eomportal-lastUpdate") {
-	    var date_raw = metas[i].getAttribute("content");
-	    date = lexWikiFormatDate(date_raw);
-	}
     }
     
     var spans = document.getElementsByTagName("span");
@@ -224,6 +220,13 @@ function lexWikiParseBostonGlobeArticle(lexWikiNewsPage) {
 	    }
 	}
     }
+
+    // Get the date
+    var elts = document.querySelectorAll("time[itemprop='datePublished']");
+    if (elts.length > 0) {
+	var date_raw = elts[0].getAttribute("datetime");
+	date = lexWikiFormatDate(date_raw);
+    }    
 
     self.postMessage(["Boston Globe", url, hdl, authors, date, descr, 
 		      lexWikiNewsPage]);    
@@ -438,7 +441,7 @@ function lexWikiParsePoliticoArticle(lexWikiNewsPage) {
 		      lexWikiNewsPage]);    
 }
 
-function lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage) {
+function lexWikiParseWickedLocalArticle(lexWikiNewsPage, newspaperName) {
     var url="", hdl="", authors="", date="", descr="";
 
     var metas = document.getElementsByTagName("meta");
@@ -470,8 +473,16 @@ function lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage) {
     var d3 = new Date(d2.substring(0, 4), d2.substring(5, 6), d2.substring(7, 8));
     date = lexWikiFormatDate(d3);
 
-    self.postMessage(["Lexington Minuteman", url, hdl, authors, date, descr, 
+    self.postMessage([newspaperName, url, hdl, authors, date, descr, 
 		      lexWikiNewsPage]);    
+}
+
+function lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage) {
+    lexWikiParseWickedLocalArticle(lexWikiNewsPage, "Lexington Minuteman");
+}
+
+function lexWikiParseWorcesterTelegramArticle(lexWikiNewsPage) {
+    lexWikiParseWickedLocalArticle(lexWikiNewsPage, "Worcester Telegram");    
 }
 
 function lexWikiParseCNNArticle(lexWikiNewsPage) {
@@ -617,6 +628,8 @@ function lexWikiParseGenericArticle(node, data) {
 	lexWikiParsePoliticoArticle(lexWikiNewsPage);
     } else if (urlHost.match(/lexington\.wickedlocal\.com$/)) {
 	lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage);
+    } else if (urlHost.match(/telegram\.com$/)) {
+	lexWikiParseWorcesterTelegramArticle(lexWikiNewsPage);
     } else if (urlHost.match(/cnn\.com$/)) {
 	lexWikiParseCNNArticle(lexWikiNewsPage);
     } else if (urlHost.match(/theatlantic\.com$/)) {
