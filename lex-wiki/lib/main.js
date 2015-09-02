@@ -23,7 +23,8 @@ var lexWikiURLContext = ["*.nytimes.com",
 			 "*.cnn.com",
 			 "*.theatlantic.com",
 			 "*.usnews.com",
-			 "*.usatoday.com"
+			 "*.usatoday.com",
+			 "*.thedailybeast.com"
 			 ];
 
 // Invoked by menuItemLexWikiLogin
