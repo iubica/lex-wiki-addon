@@ -627,6 +627,34 @@ function lexWikiParseUSATodayArticle(lexWikiNewsPage) {
 		      lexWikiNewsPage]);    
 }
 
+function lexWikiParseDailyBeastArticle(lexWikiNewsPage) {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("name") == "parsely-page") {
+	    var str = metas[i].getAttribute("content"); // A JSON object
+
+	    var parsely = JSON.parse(str);
+
+	    url = parsely.link;
+	    hdl = parsely.title;
+	    authorArray = parsely.author.split(',');
+	    date = lexWikiFormatDate(parsely.pub_date);
+	}
+	if (metas[i].getAttribute("property") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+    }
+    
+    // Get the authors
+    authors = lexWikiFormatAuthors(authorArray);
+
+    self.postMessage(["The Daily Beast", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
+}
+
 function lexWikiParseGenericArticle(node, data) {
     var lexWikiNewsPage = data;
     var urlHost = window.location.host;
@@ -667,6 +695,8 @@ function lexWikiParseGenericArticle(node, data) {
 	lexWikiParseUSNewsAndWorldReportArticle(lexWikiNewsPage);
     } else if (urlHost.match(/usatoday\.com$/)) {
 	lexWikiParseUSATodayArticle(lexWikiNewsPage);
+    } else if (urlHost.match(/thedailybeast\.com$/)) {
+	lexWikiParseDailyBeastArticle(lexWikiNewsPage);
     }
 }
 
