@@ -470,8 +470,13 @@ function lexWikiParseWickedLocalArticle(lexWikiNewsPage, newspaperName) {
     // http://lexington.wickedlocal.com/article/20150604/NEWS/150607953
     var d1 = url.split("/");
     var d2 = d1[4];
-    var d3 = new Date(d2.substring(0, 4), d2.substring(5, 6), d2.substring(7, 8));
-    date = lexWikiFormatDate(d3);
+    
+    var d_year = d2.substring(0, 4);
+    var d_month = d2.substring(4, 6);
+    var d_day = d2.substring(6, 8);
+    var d_date = new Date(d_year, d_month, d_day);
+
+    date = lexWikiFormatDate(d_date);
 
     self.postMessage([newspaperName, url, hdl, authors, date, descr, 
 		      lexWikiNewsPage]);    
