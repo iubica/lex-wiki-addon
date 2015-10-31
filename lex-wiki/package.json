@@ -1,11 +1,11 @@
 {
   "name": "lex-wiki-editor",
   "title": "Lex-Wiki Editor",
-  "id": "jid1-PWvb5d6eoY4YYQ",
+  "id": "jid1-PWvb5d6eoY4YYQ@jetpack",
   "description": "Lex-Wiki.org add-on",
   "author": "",
   "license": "MPL 2.0",
-  "version": "1.0",	
+  "version": "1.0.1",	
   "preferences": [
   	{
         "name": "mediaWikiSite",

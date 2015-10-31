@@ -660,6 +660,41 @@ function lexWikiParseDailyBeastArticle(lexWikiNewsPage) {
 		      lexWikiNewsPage]);    
 }
 
+function lexWikiParseLowellSunArticle(lexWikiNewsPage) {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("name") == "sailthru.url") {
+	    url = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("property") == "og:title") {
+	    hdl = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "description") {
+	    descr = metas[i].getAttribute("content");
+	}
+	if (metas[i].getAttribute("name") == "sailthru.date") {
+	    var date_raw = metas[i].getAttribute("content");
+	    date = lexWikiFormatDate(date_raw);
+	}
+	if (metas[i].getAttribute("name") == "sailthru.author") {
+	    var author_raw = metas[i].getAttribute("content");
+	    author_raw = author_raw.replace(/^By /, "");
+	    author_raw = author_raw.replace(/, ([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/g, "");
+	    var author = author_raw;
+	    authorArray.push(author);
+	}
+    }
+    
+    // Get the authors
+    authors = lexWikiFormatAuthors(authorArray);
+
+    self.postMessage(["The Lowell Sun", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
+}
+
 function lexWikiParseGenericArticle(node, data) {
     var lexWikiNewsPage = data;
     var urlHost = window.location.host;
@@ -702,6 +737,8 @@ function lexWikiParseGenericArticle(node, data) {
 	lexWikiParseUSATodayArticle(lexWikiNewsPage);
     } else if (urlHost.match(/thedailybeast\.com$/)) {
 	lexWikiParseDailyBeastArticle(lexWikiNewsPage);
+    } else if (urlHost.match(/lowellsun\.com$/)) {
+	lexWikiParseLowellSunArticle(lexWikiNewsPage);
     }
 }
 
