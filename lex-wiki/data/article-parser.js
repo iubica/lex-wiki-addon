@@ -35,6 +35,18 @@ function lexWikiFormatDate(date) {
 	    return lexWikiFormatDate(d);
 	}
 
+	dateArray = date.match(/^\d{8}/);
+	if (dateArray && dateArray[0]) {
+	    var d = dateArray[0];
+	    var d_year = Number(d.substring(0, 4));
+	    if (d_year >= 1950 && d_year <= 2100) {
+		var d_month = Number(d.substring(4, 6));
+		var d_day = Number(d.substring(6, 8));
+		return lexWikiMonths[d_month - 1] + " " + 
+		    d_day + ", " + d_year;
+	    }
+	}
+
 	return "";
     }
 }
@@ -471,12 +483,7 @@ function lexWikiParseWickedLocalArticle(lexWikiNewsPage, newspaperName) {
     var d1 = url.split("/");
     var d2 = d1[4];
     
-    var d_year = d2.substring(0, 4);
-    var d_month = d2.substring(4, 6);
-    var d_day = d2.substring(6, 8);
-    var d_date = new Date(d_year, d_month, d_day);
-
-    date = lexWikiFormatDate(d_date);
+    date = lexWikiFormatDate(d2);
 
     self.postMessage([newspaperName, url, hdl, authors, date, descr, 
 		      lexWikiNewsPage]);    
@@ -488,6 +495,30 @@ function lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage) {
 
 function lexWikiParseWorcesterTelegramArticle(lexWikiNewsPage) {
     lexWikiParseWickedLocalArticle(lexWikiNewsPage, "Worcester Telegram");    
+}
+
+function lexWikiParseCapeCodTimesArticle(lexWikiNewsPage) {
+    var url="", hdl="", authors="", date="", descr="";
+
+    var s = document.querySelectorAll("script[type='application/ld+json']");
+    if (s.length > 0) {
+	var t = s[0].childNodes[0].data;
+        var jsonld = JSON.parse(t);
+
+	url = jsonld.url;
+	hdl = jsonld.headline;
+
+	if (jsonld.dateCreated) {
+	    date = lexWikiFormatDate(jsonld.dateCreated);
+	}
+	
+	if (jsonld.creator) {
+	    authors = jsonld.creator.replace(/ ([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/g, "");
+	}	    
+    }
+
+    self.postMessage(["Cape Cod Times", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
 }
 
 function lexWikiParseCNNArticle(lexWikiNewsPage) {
@@ -727,6 +758,8 @@ function lexWikiParseGenericArticle(node, data) {
 	lexWikiParseLexingtonMinutemanArticle(lexWikiNewsPage);
     } else if (urlHost.match(/telegram\.com$/)) {
 	lexWikiParseWorcesterTelegramArticle(lexWikiNewsPage);
+    } else if (urlHost.match(/capecodtimes\.com$/)) {
+	lexWikiParseCapeCodTimesArticle(lexWikiNewsPage);
     } else if (urlHost.match(/cnn\.com$/)) {
 	lexWikiParseCNNArticle(lexWikiNewsPage);
     } else if (urlHost.match(/theatlantic\.com$/)) {
