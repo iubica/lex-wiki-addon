@@ -336,7 +336,13 @@ function lexWikiEditWindow(newspaper, url, headline,
     var utils = require('sdk/window/utils');
     var browserWindow = utils.getMostRecentBrowserWindow();
     var window = browserWindow.content; // `window` object for the current webpage
-    var msg = "* " + newspaper + ": [" + url + " " + headline + "], by " + authors + " (" + date + ")";
+    var msg = "* " + newspaper + ": [" + url + " " + headline + "], ";
+    if (authors) {
+	msg += "by " + authors + " ";
+    } else {
+	msg += "unattributed ";
+    }
+    msg += "(" + date + ")";
     
     if (!lexWikiNewsPage) {
 	var r = window.confirm(msg + "\n\nCopy to clipboard?\n");
