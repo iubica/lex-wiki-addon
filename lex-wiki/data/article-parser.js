@@ -726,6 +726,34 @@ function lexWikiParseLowellSunArticle(lexWikiNewsPage) {
 		      lexWikiNewsPage]);    
 }
 
+function lexWikiParseFoxNewsArticle(lexWikiNewsPage) {
+    var url="", hdl="", authors="", date="", descr="";
+    var authorArray = [];
+
+    var metas = document.getElementsByTagName("meta");
+    for (i=0; i < metas.length; i++) {
+	if (metas[i].getAttribute("name") == "parsely-page") {
+	    var str = metas[i].getAttribute("content"); // A JSON object
+
+	    var parsely = JSON.parse(str);
+
+	    url = parsely.link;
+	    hdl = parsely.title;
+	    authorArray = parsely.author.split(", ");
+	    date = lexWikiFormatDate(parsely.pub_date);
+	}
+	if (metas[i].getAttribute("property") == "og:description") {
+	    descr = metas[i].getAttribute("content");
+	}
+    }
+    
+    // Get the authors
+    authors = lexWikiFormatAuthors(authorArray);
+
+    self.postMessage(["Fox News", url, hdl, authors, date, descr, 
+		      lexWikiNewsPage]);    
+}
+
 function lexWikiParseGenericArticle(node, data) {
     var lexWikiNewsPage = data;
     var urlHost = window.location.host;
@@ -772,6 +800,8 @@ function lexWikiParseGenericArticle(node, data) {
 	lexWikiParseDailyBeastArticle(lexWikiNewsPage);
     } else if (urlHost.match(/lowellsun\.com$/)) {
 	lexWikiParseLowellSunArticle(lexWikiNewsPage);
+    } else if (urlHost.match(/foxnews\.com$/)) {
+	lexWikiParseFoxNewsArticle(lexWikiNewsPage);
     }
 }
 
