@@ -3,8 +3,8 @@
   "title": "Lex-Wiki Editor",
   "id": "jid1-PWvb5d6eoY4YYQ@jetpack",
   "description": "Lex-Wiki.org add-on",
-  "author": "",
-  "license": "MPL 2.0",
+  "author": "Andrei Radulescu-Banu <bitdribble@gmail.com> (http://lex-wiki.org/wiki/User:Andrei_Radulescu-Banu)",
+  "license": "CC-BY-SA-4.0",
   "version": "1.0.3",	
   "preferences": [
   	{
