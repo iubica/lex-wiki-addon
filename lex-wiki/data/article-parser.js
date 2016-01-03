@@ -86,12 +86,18 @@ function lexWikiParseNewYorkTimesArticle(lexWikiNewsPage) {
 	if (metas[i].getAttribute("property") == "twitter:description") {
 	    descr = metas[i].getAttribute("content");
 	}
+	if (metas[i].getAttribute("name") == "ptime") {
+	    var date_raw = metas[i].getAttribute("content");
+	    date = lexWikiFormatDate(date_raw);
+	}
     }
 
-    var time = document.querySelectorAll("time.dateline");
-    if (time.length) {
-	var date_raw = time[0].getAttribute("datetime");
-	date = lexWikiFormatDate(date_raw);
+    if (!date.length) {
+	var time = document.querySelectorAll("time.dateline");
+	if (time.length) {
+	    var date_raw = time[0].getAttribute("datetime");
+	    date = lexWikiFormatDate(date_raw);
+	}
     }
 
     self.postMessage(["New York Times", url, hdl, authors, date, descr, 
