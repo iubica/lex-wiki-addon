@@ -58,6 +58,14 @@ function lexWikiGetMonth(idx) {
     }
 }
 
+function lexWikiGetMostRecentWindow() {
+    var utils = require('sdk/window/utils');
+    var browserWindow = utils.getMostRecentBrowserWindow();
+    var window = browserWindow.content; // `window` object for the current webpage
+    
+    return window;
+}
+
 function lexWikiPost(msg, date, lexWikiNewsPage) {
     function lexWikiPageEditDone(response) {
 	console.log("Page edit done response: " + response.text.substr(0,1000));    
@@ -336,9 +344,8 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 function lexWikiEditWindow(newspaper, url, headline, 
 			   authors, date, description,
 			   lexWikiNewsPage) {
-    var utils = require('sdk/window/utils');
-    var browserWindow = utils.getMostRecentBrowserWindow();
-    var window = browserWindow.content; // `window` object for the current webpage
+    var window = lexWikiGetMostRecentWindow();
+
     var msg = "* " + newspaper + ": [" + url + " " + headline + "], ";
     if (authors) {
 	msg += "by " + authors + " ";
@@ -441,7 +448,6 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 
     function lexWikiLogin3(response) {
 	var p = require('sdk/simple-prefs');
-
 	var queryUrl = p.prefs['mediaWikiSite'] + "/w/api.php?action=query&list=categorymembers&cmtitle=Category:News&format=json";
 	
 	console.log("Login response 2 (json): " + response.text);
@@ -457,6 +463,10 @@ function lexWikiMenuLoginOnMessageFunction(a) {
 		});
 	    
 	    h.post();
+	} else {
+	    var window = lexWikiGetMostRecentWindow();
+
+	    window.alert("Login to " + p.prefs['mediaWikiSite'] + " failed: " + response.json.login.result);
 	}
     }
     
