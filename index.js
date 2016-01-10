@@ -84,6 +84,7 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	var new_item_inserted = false;
 	var news_entries = [];
 	var old_month, old_year;
+	var window = lexWikiGetMostRecentWindow();
 
 	// Is the link already posted?
 	if (page_contents.indexOf(msg) >= 0) {
@@ -99,7 +100,16 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	    idx_news_section_start = page_contents.search(/^== *Commentary/m);
 	}
 	if (idx_news_section_start < 0) {
-	    console.log("No News or Commentary section");
+	    idx_news_section_start = page_contents.search(/^<!-- News/m);
+	}
+	if (idx_news_section_start < 0) {
+	    idx_news_section_start = page_contents.search(/^<!-- Commentary/m);
+	}
+
+	if (idx_news_section_start < 0) {
+	    console.log("No News or Commentary section.");
+	    window.alert("No News or Commentary section.");
+
 	    return "";
 	}
 	
@@ -108,7 +118,8 @@ function lexWikiPost(msg, date, lexWikiNewsPage) {
 	// Skip past newline
 	idx_section_start = page_contents.substring(idx_news_section_start).search(/\n/);
 	if (idx_section_start < 0) {
-	    console.log("Can't find newline, invalidly formatted page");
+	    console.log("Can't find newline, invalidly formatted page.");
+	    window.alert("Can't find newline, invalidly formatted page.");
 	    return "";
 	}
 
