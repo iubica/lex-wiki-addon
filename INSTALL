@@ -4,8 +4,9 @@ To compile this code:
 - Set up a developer.mozilla.org account, and create your api-key and api-secret 
 (see instructions at https://blog.mozilla.org/addons/2015/12/18/signing-firefox-add-ons-with-jpm-sign/)
 - Execute 'jpm run' to debug code changes; you can use the Firefox debugger in this setup
+- Bump version in package.json
 - Execute 'jpm xpi' to compile the add-on
-- Bump version in package.json, and sign the xpi with 'jpm sign --api-key ${AMO_API_KEY} --api-secret ${AMO_API_SECRET}', 
+- Sign the xpi with 'jpm sign --api-key ${AMO_API_KEY} --api-secret ${AMO_API_SECRET}', 
 where AMO_API_KEY and AMO_API_SECRET are the api-key and api-secret from developer.mozilla.org
 - Distribute the xpi e.g. by email, and load it in the Firefox browser using 'Ctrl-o'.
 
